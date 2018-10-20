@@ -41,8 +41,8 @@ std::vector<std::string> CSVparse(std::string s) {
 }
 
 std::string CSVize(std::string s) {
-    // strip any newline, any comma, any quote and any &, before they are enclosed
-    // with quotes and written to the file.
+    // strip any newline, any comma, any quote and any &,
+    // before they are enclosed with quotes and written to the file.
     std::string proc;
     for (int i = 0; i < s.length(); i++) {
         if (s[i] == '\n' || s[i] == ',' || s[i] == '\"' || s[i] == '&') {
