@@ -13,8 +13,8 @@ public:
   /**
   * constructor with arguments
   */
-  User(std::string t_userName, std::string t_userPassword,
-       std::string t_userEmail, std::string t_userPhone);
+  User(const std::string &t_userName, const std::string &t_userPassword,
+       const std::string &t_userEmail, const std::string &t_userPhone);
 
   /**
   * @brief copy constructor
@@ -31,7 +31,7 @@ public:
   * @brief set the name of the user
   * @param   a string indicate the new name of the user
   */
-  void setName(std::string t_name);
+  void setName(const std::string &t_name);
 
   /**
   * @brief get the password of the user
@@ -43,7 +43,7 @@ public:
   * @brief set the password of the user
   * @param   a string indicate the new password of the user
   */
-  void setPassword(std::string t_password);
+  void setPassword(const std::string &t_password);
 
   /**
   * @brief get the email of the user
@@ -55,7 +55,7 @@ public:
   * @brief set the email of the user
   * @param   a string indicate the new email of the user
   */
-  void setEmail(std::string t_email);
+  void setEmail(const std::string &t_email);
 
   /**
   * @brief get the phone of the user
@@ -67,7 +67,7 @@ public:
   * @brief set the phone of the user
   * @param   a string indicate the new phone of the user
   */
-  void setPhone(std::string t_phone);
+  void setPhone(const std::string &t_phone);
 
 private:
   std::string m_name;
