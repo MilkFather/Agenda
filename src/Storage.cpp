@@ -29,6 +29,31 @@ std::vector<std::string> split(std::string s, char c) {
     return v;
 }
 
+std::vector<std::string> CSVparse(std::string s) {
+    // rules: entries are separated by ",",
+    // each entry is enclosed by a pair of brackets. Other rules may apply.
+    // assumption: no entry shall have a comma, a quote, or &.
+    std::vector<std::string> v = split(s, ',');
+    for (int i = 0; i < v.size(); i++) {
+        v[i] = v[i].substr(1, v[i].length() - 2);
+    }
+    return v;
+}
+
+std::string CSVize(std::string s) {
+    // strip any newline, any comma, any quote and any &, before they are enclosed
+    // with quotes and written to the file.
+    std::string proc;
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] == '\n' || s[i] == ',' || s[i] == '\"' || s[i] == '&') {
+            continue;
+        } else {
+            proc += s[i];
+        }
+    }
+    return proc;
+}
+
 std::string flat(std::vector<std::string> f, char c) {
     std::string s;
     if (f.size() <= 0)
@@ -36,20 +61,9 @@ std::string flat(std::vector<std::string> f, char c) {
     s += f[0];
     for (int i = 1; i < f.size(); i++) {
         s += c;
-        s += s[i];
+        s += CSVize(f[i]);
     }
     return s;
-}
-
-std::vector<std::string> CSVparse(std::string s) {
-    // rules: entries are separated by ",",
-    // each entry is enclosed by a pair of brackets. Other rules may apply.
-    // assumption: no entry shall have a space, a comma, a quote, or &.
-    std::vector<std::string> v = split(s, ',');
-    for (int i = 0; i < v.size(); i++) {
-        v[i] = v[i].substr(1, v[i].length() - 2);
-    }
-    return v;
 }
 
 bool Storage::readFromFile(void) {
@@ -101,10 +115,10 @@ bool Storage::writeToFile(void) {
         std::list<User>::iterator it = this->m_userList.begin();
         for (; it != this->m_userList.end(); it++) {
             User u = *it;
-            usr << "\"" << u.getName() << "\",\""
-            << u.getPassword() << "\",\""
-            << u.getEmail() << "\",\""
-            << u.getPhone() << "\"" << std::endl;
+            usr << "\"" << CSVize(u.getName()) << "\",\""
+            << CSVize(u.getPassword()) << "\",\""
+            << CSVize(u.getEmail()) << "\",\""
+            << CSVize(u.getPhone()) << "\"" << std::endl;
         }
         usr.close();
     } else {
@@ -115,11 +129,11 @@ bool Storage::writeToFile(void) {
         std::list<Meeting>::iterator it = this->m_meetingList.begin();
         for (; it != this->m_meetingList.end(); it++) {
             Meeting m = *it;
-            meeting << "\"" << m.getSponsor() << "\",\""
+            meeting << "\"" << CSVize(m.getSponsor()) << "\",\""
             << flat(m.getParticipator(), '&') << "\",\""
-            << Date::dateToString(m.getStartDate()) << "\",\""
-            << Date::dateToString(m.getEndDate()) << "\",\""
-            << m.getTitle() << "\"" << std::endl;
+            << CSVize(Date::dateToString(m.getStartDate())) << "\",\""
+            << CSVize(Date::dateToString(m.getEndDate())) << "\",\""
+            << CSVize(m.getTitle()) << "\"" << std::endl;
         }
         meeting.close();
     } else {
@@ -235,9 +249,6 @@ int Storage::deleteMeeting(std::function<bool(const Meeting &)> filter) {
 }
 
 bool Storage::sync(void) {
-    if (!this->m_dirty) {
-        return true;
-    } else {
-        return this->writeToFile();
-    }
+    this->m_dirty = false;
+    return this->writeToFile();
 }
