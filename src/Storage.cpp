@@ -137,7 +137,9 @@ std::shared_ptr<Storage> Storage::getInstance(void) {  // static
 }
 
 Storage::~Storage() {
-    this->writeToFile();
+    if (this->m_dirty) {
+        this->writeToFile();
+    }
 }
 
 void Storage::createUser(const User & t_user) {
