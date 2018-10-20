@@ -19,7 +19,7 @@ Date::Date(int t_year, int t_month, int t_day, int t_hour, int t_minute) {
     this->m_minute = t_minute;
 }
 
-Date::Date(std::string dateString) {
+Date::Date(const std::string &dateString) {
     if (dateString.length() != 16) {
         this->m_year = 0;
         this->m_month = 0;
@@ -97,7 +97,7 @@ void Date::setMinute(const int t_minute) {
         this->m_minute = t_minute;
 }
 
-bool Date::isValid(const Date t_date) {
+bool Date::isValid(const Date &t_date) {
     int y = t_date.m_year;
     bool leap = ((y % 4 == 0) && (y % 100 != 0)) || (y % 400 == 0);
     int days[13] = {-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -120,7 +120,7 @@ bool Date::isValid(const Date t_date) {
     return true;
 }
 
-Date Date::stringToDate(const std::string t_dateString) {
+Date Date::stringToDate(const std::string &t_dateString) {
     Date d;
     if (t_dateString.length() != 16)
         return d;
@@ -142,7 +142,7 @@ Date Date::stringToDate(const std::string t_dateString) {
     }
 }
 
-std::string Date::dateToString(Date t_date) {
+std::string Date::dateToString(const Date &t_date) {
     if (Date::isValid(t_date)) {
         char str[17];
         snprintf(str, sizeof(str),
