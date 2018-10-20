@@ -105,6 +105,17 @@ TEST(Storage, AddQueryUpdateRemoveMeeeting) {
     EXPECT_EQ(s->queryUser(all).size(), 2);
 }
 */
+
+TEST(Date, strToDate) {
+    EXPECT_EQ(Date::stringToDate("2018-10-01/10:09"), Date(2018, 10, 1, 10, 9));
+    EXPECT_EQ(Date::stringToDate("2018-02-20/10:60"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("0999-10-01/10:09"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("1000-7-4/8:9"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("yyyy-mm-dd/hh:mm"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("2016-02-29/00:00"), Date(2016, 2, 29, 0, 0));
+    EXPECT_EQ(Date::stringToDate("2017-02-29/00:00"), Date(0, 0, 0, 0, 0));
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

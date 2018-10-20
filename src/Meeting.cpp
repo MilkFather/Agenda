@@ -86,12 +86,3 @@ bool Meeting::isParticipator(const std::string &t_username) const {
             return true;
     return false;
 }
-/*
-bool operator==(const Meeting lhs, const Meeting rhs) {
-    return lhs.getSponsor() == rhs.getSponsor() &&
-    lhs.getParticipator() == rhs.getParticipator() &&
-    lhs.getStartDate() == rhs.getStartDate() &&
-    lhs.getEndDate() == rhs.getEndDate() &&
-    lhs.getTitle() == rhs.getTitle();
-}
-*/

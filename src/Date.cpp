@@ -135,7 +135,12 @@ Date Date::stringToDate(const std::string &t_dateString) {
         d.m_day = stoi(t_dateString.substr(8, 2));
         d.m_hour = stoi(t_dateString.substr(11, 2));
         d.m_minute = stoi(t_dateString.substr(14, 2));
-        return d;
+        if (isValid(d) == true) {
+            return d;
+        } else {
+            Date f;
+            return f;
+        }
     } catch (std::exception e) {
         Date f;
         return f;
