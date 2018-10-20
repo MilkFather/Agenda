@@ -114,6 +114,9 @@ TEST(Date, strToDate) {
     EXPECT_EQ(Date::stringToDate("yyyy-mm-dd/hh:mm"), Date(0, 0, 0, 0, 0));
     EXPECT_EQ(Date::stringToDate("2016-02-29/00:00"), Date(2016, 2, 29, 0, 0));
     EXPECT_EQ(Date::stringToDate("2017-02-29/00:00"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("10000-02-29/00:00"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("2016-02-29/00:-4"), Date(0, 0, 0, 0, 0));
+    EXPECT_EQ(Date::stringToDate("2016-02-29/00:.4"), Date(0, 0, 0, 0, 0));
 }
 
 int main(int argc, char** argv) {

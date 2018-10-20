@@ -89,7 +89,7 @@ bool Storage::readFromFile(void) {
     } else {
         return false;
     }
-
+    this->m_dirty = false;
     return true;
 }
 
@@ -125,6 +125,7 @@ bool Storage::writeToFile(void) {
     } else {
         return false;
     }
+    this->m_dirty = false;
     return true;
 }
 
@@ -141,6 +142,7 @@ Storage::~Storage() {
 
 void Storage::createUser(const User & t_user) {
     this->m_userList.push_back(t_user);
+    this->m_dirty = true;
 }
 
 std::list<User>
@@ -165,6 +167,7 @@ int Storage::updateUser(std::function<bool(const User &)> filter,
             count++;
         }
     }
+    this->m_dirty = true;
     return count;
 }
 
@@ -178,11 +181,13 @@ int Storage::deleteUser(std::function<bool(const User &)> filter) {
             ++it;
         }
     }
+    this->m_dirty = true;
     return count;
 }
 
 void Storage::createMeeting(const Meeting & t_meeting) {
     this->m_meetingList.push_back(t_meeting);
+    this->m_dirty = true;
 }
 
 std::list<Meeting>
@@ -207,6 +212,7 @@ int Storage::updateMeeting(std::function<bool(const Meeting &)> filter,
             count++;
         }
     }
+    this->m_dirty = true;
     return count;
 }
 
@@ -222,9 +228,14 @@ int Storage::deleteMeeting(std::function<bool(const Meeting &)> filter) {
             ++it;
         }
     }
+    this->m_dirty = true;
     return count;
 }
 
 bool Storage::sync(void) {
-    return this->writeToFile();
+    if (!this->m_dirty) {
+        return true;
+    } else {
+        return this->writeToFile();
+    }
 }
