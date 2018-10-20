@@ -25,16 +25,16 @@ bool filterUserTest (const User & u) {
 void updateUserTest (User & u) {
     u.setPassword("breakup");
 }
-/*
+
 TEST(Storage, basicIO) {
     Storage *s = Storage::getInstance().get();
     
-    function<bool(const User &)> all = getAllU;
-    EXPECT_EQ(s->queryUser(all).size(), 2);
+    //function<bool(const User &)> all = getAllU;
+    //EXPECT_EQ(s->queryUser(all).size(), 2);
     
     EXPECT_EQ(s->sync(), true);
-}*/
-/*
+}
+
 TEST(Storage, AddQueryUpdateRemoveUser) {
     Storage *s = Storage::getInstance().get();
     
@@ -56,7 +56,7 @@ TEST(Storage, AddQueryUpdateRemoveUser) {
     EXPECT_EQ(s->queryUser(filter).front().getEmail(), "love@shi");
     EXPECT_EQ(s->queryUser(filter).front().getPhone(), "88877343376");
 }
-*/
+
 TEST(Storage, AddQueryUpdateRemoveMeeting) {
     Storage *s = Storage::getInstance().get();
     
@@ -68,6 +68,15 @@ TEST(Storage, AddQueryUpdateRemoveMeeting) {
     s->createMeeting(m);
     Meeting n("A", {"B", "C"}, Date("2016-08-01/00:00"), Date("2016-08-01/12:00"), "meeting");
     s->createMeeting(n);
+    
+    Meeting n2("A", {"B", "C", "D", "EEE"}, Date("2016-08-01/00:00"), Date("2016-08-01/14:00"), "meeting");
+    s->createMeeting(n2);
+    
+    Meeting n3("A", {"B"}, Date("2016-02-29/00:00"), Date("2016-08-01/14:00"), "meeting");
+    s->createMeeting(n3);
+    
+    Meeting n4("A", {"B", "A"}, Date("2017-02-29/00:00"), Date("2017-08-01/14:00"), "meeting");
+    s->createMeeting(n4);
     
     s->sync();
     

@@ -4,8 +4,6 @@
 #include <fstream>
 #include <vector>
 
-#include <iostream>
-
 std::shared_ptr<Storage> Storage::m_instance(NULL);
 
 Storage::Storage(void) {
