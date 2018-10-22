@@ -2,5 +2,4 @@
 ./unittest.dSYM
 ./bin
 ./build
-unittest.dSYM/Contents/Resources/DWARF/unittest
-.DS_Store
+**/.DS_Store
