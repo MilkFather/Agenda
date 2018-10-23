@@ -38,5 +38,9 @@ User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
 lint : 
 	cpplint --filter=-legal/copyright,-build/header_guard,-build/include,-readability/streams src/*.hpp src/*.cpp
 
+clean :
+	rm -f ./bin/*
+	rm -f ./build/*
+
 unittest : $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp test/main.cpp
 	g++ -g -std=c++11 -o unittest -lgtest -lgtest_main -lpthread -I$(HEADER_PTH) -I./test/gtest -I./test -I./test/gtest/internal $(SRC_PTH)Date.cpp $(SRC_PTH)Meeting.cpp $(SRC_PTH)Storage.cpp $(SRC_PTH)User.cpp test/main.cpp
