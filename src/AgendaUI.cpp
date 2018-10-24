@@ -96,7 +96,7 @@ void AgendaUI::userLogIn(void) {
     std::cin >> u >> p;
     if (this->m_agendaService.userLogIn(u, p) == true) {
         this->m_userName = u;
-        this->m_password = p;
+        this->m_userPassword = p;
         std::cout << "[log in] succeed!" << std::endl;
     } else {
         std::cout << "[error] log in fail!" << std::endl;
@@ -109,7 +109,7 @@ void AgendaUI::userRegister(void) {
     std::cout << "[register] ";
 
     std::string u, p, e, t;
-    std:cin >> u >> p >> e >> t;
+    std::cin >> u >> p >> e >> t;
     if (this->m_agendaService.userRegister(u, p, e, t)) {
         std::cout << "[register] succeed!" << std::endl;
     } else {
@@ -120,7 +120,7 @@ void AgendaUI::userRegister(void) {
 
 void AgendaUI::userLogOut(void) {
     this->m_userName = "";
-    this->m_password = "";
+    this->m_userPassword = "";
     std::cout << std::endl;
 }
 
@@ -130,9 +130,9 @@ void AgendaUI::quitAgenda(void) {
 }
 
 void AgendaUI::deleteUser(void) {
-    this->m_agendaService.deleteUser(this->m_userName, this->m_password);
+    this->m_agendaService.deleteUser(this->m_userName, this->m_userPassword);
     this->m_userName = "";
-    this->m_password = "";
+    this->m_userPassword = "";
     std::cout << "[delete agenda account] succeed!" << std::endl;
     std::cout << std::endl;
 }
@@ -159,7 +159,7 @@ void AgendaUI::createMeeting(void) {
     std::cout << "[create meeting] [title] [start time(yyyy-mm-dd/hh:mm)] [end time(yyyy-mm-dd/hh:mm)]" << std::endl;
     std::string t, st, et;
     std::cout << "[create meeting] ";
-    cin >> t >> st >> et;
+    std::cin >> t >> st >> et;
 
     if (this->m_agendaService.createMeeting(this->m_userName, t, st, et, parts) == true) {
         std::cout << "[create meeting] succeed!" << std::endl;
@@ -211,7 +211,7 @@ void AgendaUI::queryMeetingByTimeInterval(void) {
 void AgendaUI::deleteMeetingByTitle(void) {
     std::cout << "[delete meeting] [title]" << std::endl;
     std::cout << "[delete meeting] ";
-    string t;
+    std::string t;
     std::cin >> t;
     if (this->m_agendaService.deleteMeeting(this->m_userName, t) == true) {
         std::cout << "[delete meeting by title] succeed!" << std::endl;
@@ -222,7 +222,7 @@ void AgendaUI::deleteMeetingByTitle(void) {
 }
 
 void AgendaUI::deleteAllMeetings(void) {
-    this->m_agendaService.deleteAllMeetings();
+    this->m_agendaService.deleteAllMeetings(this->m_userName);
     std::cout << "[delete all meetings] succeed!" << std::endl;
     std::cout << std::endl;
 }
