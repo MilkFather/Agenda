@@ -36,7 +36,7 @@ void AgendaUI::OperationLoop(void) {
 }
 
 void AgendaUI::startAgenda(void) {
-    //this->m_agendaService
+    this->m_agendaService.startAgenda();
 }
 
 std::string AgendaUI::getOperation() {
