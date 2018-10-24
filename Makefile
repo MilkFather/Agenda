@@ -11,12 +11,12 @@ EXEC := agenda
 
 CC := g++ -g -std=c++11 -I$(HEADER_PTH)
 
-build : $(BUILD_PTH)main.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 	@mkdir -p $(BIN_PTH)
 	@mkdir -p $(BUILD_PTH)
-	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)main.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 
-$(BUILD_PTH)main.o : $(SRC_PTH)main.cpp $(BUILD_PTH)AgendaUI.o
+$(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@mkdir -p $(BUILD_PTH); 
 	$(CC) -c -o $@ $<
 
