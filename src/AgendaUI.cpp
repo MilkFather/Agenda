@@ -7,6 +7,7 @@ AgendaUI::AgendaUI() {
 void AgendaUI::OperationLoop(void) {
     bool cont;
     do {
+        //std::cout << std::endl;
         std::cout << "----------------------- Agenda -------------------------------" << std::endl;
         std::cout << "Action :" << std::endl;
         if (this->m_userName == "") {  // not logged in    
@@ -27,6 +28,7 @@ void AgendaUI::OperationLoop(void) {
             std::cout << "da  - delete all meetings" << std::endl;
         }
         std::cout << "--------------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
 
         std::string cmd = this->getOperation();
         cont = this->executeOperation(cmd);
@@ -38,8 +40,14 @@ void AgendaUI::startAgenda(void) {
 }
 
 std::string AgendaUI::getOperation() {
+    std::cout
+    << (this->m_userName == "" ? "Agenda" : "Agenda@" + this->m_userName) 
+    << " : " 
+    << (this->m_userName == "" ? "~$ " : "# ");
+    
     std::string op;
     std::cin >> op;
+    std::cout << std::endl;
     return op;
 }
 
@@ -81,15 +89,38 @@ bool AgendaUI::executeOperation(std::string t_operation) {
 }
 
 void AgendaUI::userLogIn(void) {
-    
+    std::cout << "[log in] [user name] [password]" << std::endl;
+    std::cout << "[log in] ";
+
+    std::string u, p;
+    std::cin >> u >> p;
+    if (this->m_agendaService.userLogIn(u, p) == true) {
+        this->m_userName = u;
+        this->m_password = p;
+        std::cout << "[log in] succeed!" << std::endl;
+    } else {
+        std::cout << "[error] log in fail!" << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void AgendaUI::userRegister(void) {
+    std::cout << "[register] [user name] [password] [email] [phone]" << std::endl;
+    std::cout << "[register] ";
 
+    std::string u, p, e, t;
+    std:cin >> u >> p >> e >> t;
+    if (this->m_agendaService.userRegister(u, p, e, t)) {
+        std::cout << "[register] succeed!" << std::endl;
+    } else {
+        std::cout << "[error] register fail!" << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void AgendaUI::userLogOut(void) {
-
+    this->m_userName = "";
+    this->m_password = "";
 }
 
 void AgendaUI::quitAgenda(void) {
