@@ -121,18 +121,26 @@ void AgendaUI::userRegister(void) {
 void AgendaUI::userLogOut(void) {
     this->m_userName = "";
     this->m_password = "";
+    std::cout << std::endl;
 }
 
 void AgendaUI::quitAgenda(void) {
-
+    this->m_agendaService.quitAgenda();
+    std::cout << std::endl;
 }
 
 void AgendaUI::deleteUser(void) {
-
+    this->m_agendaService.deleteUser(this->m_userName, this->m_password);
+    this->m_userName = "";
+    this->m_password = "";
+    std::cout << "[delete agenda account] succeed!" << std::endl;
+    std::cout << std::endl;
 }
 
 void AgendaUI::listAllUsers(void) {
-
+    std::cout << "[list all users]" << std::endl;
+    std::cout << std::endl;
+    
 }
 
 void AgendaUI::createMeeting(void) {
