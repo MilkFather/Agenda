@@ -316,7 +316,7 @@ void AgendaService::startAgenda(void) {
 
 void AgendaService::quitAgenda(void) {
     if (this->m_storage != NULL) {
-        this->m_storage.get()->acoshsync();
+        this->m_storage.get()->sync();
         this->m_storage = NULL;
     }
 }

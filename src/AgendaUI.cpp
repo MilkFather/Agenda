@@ -140,7 +140,16 @@ void AgendaUI::deleteUser(void) {
 void AgendaUI::listAllUsers(void) {
     std::cout << "[list all users]" << std::endl;
     std::cout << std::endl;
+    std::list<User> ul = this->m_agendaService.listAllUsers();
     // TODO
+    std::cout << "name\t\temail\t\tphone" << std::endl;
+    auto it = ul.begin();
+    for (; it != ul.end(); ++it) {
+        std::cout << (*it).getName() << "\t\t" 
+             << (*it).getEmail() << "\t\t"
+             << (*it).getPhone() << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void AgendaUI::createMeeting(void) {
@@ -227,6 +236,28 @@ void AgendaUI::deleteAllMeetings(void) {
     std::cout << std::endl;
 }
 
+std::string unlines(std::vector<std::string> s, char c) {
+    if (s.size() == 0)
+        return "";
+    std::string s1;
+    s1 += s[0];
+    for (int i = 1; i < s.size(); i++) {
+        s1 += c;
+        s1 += s[i];
+    }
+    return s1;
+}
+
 void AgendaUI::printMeetings(std::list<Meeting> t_meetings) {
     // TODO
+    std::cout << "title\t\tsponsor\t\tstart time\t\tend time\t\tparticipators" << std::endl;
+    auto it = t_meetings.begin();
+    for (; it != t_meetings.end(); ++it) {
+        std::cout << (*it).getTitle() << "\t\t" 
+             << (*it).getSponsor() << "\t\t" 
+             << Date::dateToString((*it).getStartDate()) << "\t\t" 
+             << Date::dateToString((*it).getEndDate()) << "\t\t"
+             << unlines((*it).getParticipator(), ',') << std::endl;
+    }
+    std::cout << std::endl;
 }
