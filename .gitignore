@@ -1,7 +1,5 @@
 ./unittest
 ./unittest.dSYM
-./bin
-./build
 **/.DS_Store
 *.o
-bin/agenda
+bin/*
