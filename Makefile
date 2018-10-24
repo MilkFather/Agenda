@@ -11,29 +11,31 @@ EXEC := agenda
 
 CC := g++ -g -std=c++11 -I$(HEADER_PTH)
 
-build : main.o AgendaUI.o AgendaService.o Storage.o Meeting.o Date.o User.o
+BUILD_O := $(CC) -c -o $(BUILD_PTH)$@ $<
+
+build : $(BUILD_PTH)main.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)main.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 
-main.o : $(SRC_PTH)main.cpp AgendaUI.o
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)main.o : $(SRC_PTH)main.cpp $(BUILD_PTH)AgendaUI.o
+	$(BUILD_O)
 
-AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp AgendaService.o
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUILD_PTH)AgendaService.o
+	$(BUILD_O)
 
-AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp Storage.o
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(BUILD_PTH)Storage.o
+	$(BUILD_O)
 
-Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp Meeting.o User.o
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o
+	$(BUILD_O)
 
-Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp Date.o
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o
+	$(BUILD_O)
 
-Date.o : $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)Date.o : $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp
+	$(BUILD_O)
 
-User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
-	$(CC) -c -o $(BUILD_PTH)$@ $<
+$(BUILD_PTH)User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
+	$(BUILD_O)
 
 lint : 
 	cpplint --filter=-legal/copyright,-build/header_guard,-build/include,-readability/streams src/*.hpp src/*.cpp
