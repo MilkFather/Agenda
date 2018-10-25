@@ -1,5 +1,19 @@
 #include "AgendaUI.hpp"
 
+int maxlength(std::vector<std::string> v) {
+    int l = 0;
+    for (int i = 0; i < v.size(); i++)
+        l = std::max(l, (int)v[i].length());
+    return l;
+}
+
+std::string fillblank(int total, int used) {
+    std::string s;
+    for (int i = 0; i < (total - used); i++)
+        s += " ";
+    return s;
+}
+
 AgendaUI::AgendaUI() {
 
 }
@@ -142,13 +156,28 @@ void AgendaUI::listAllUsers(void) {
     std::cout << std::endl;
     std::list<User> ul = this->m_agendaService.listAllUsers();
     // TODO
-    std::cout << "name\t\temail\t\tphone" << std::endl;
+    // prewrite to vectors
+    std::vector<std::string> usrnames, emails, phones;
     auto it = ul.begin();
     for (; it != ul.end(); ++it) {
-        std::cout << (*it).getName() << "\t\t" 
-             << (*it).getEmail() << "\t\t"
-             << (*it).getPhone() << std::endl;
+        usrnames.push_back((*it).getName());
+        emails.push_back((*it).getEmail());
+        phones.push_back((*it).getPhone());
     }
+    // width?
+    int widname, widemail, widphone;
+    widname = std::max(4, maxlength(usrnames)) + 3;
+    widemail = std::max(5, maxlength(emails)) + 3;
+    widphone = std::max(5, maxlength(phones)) + 3;
+    // write!
+    std::cout << "name" << fillblank(widname, 4) << "email" << fillblank(widemail, 5) << "phone" << fillblank(widphone, 5) << std::endl;
+    for (int i = 0; i < usrnames.size(); i++) {
+        std::cout 
+        << usrnames[i] << fillblank(widname, usrnames[i].length()) 
+        << emails[i] << fillblank(widemail, emails[i].length()) 
+        << phones[i] << fillblank(widphone, phones[i].length()) 
+        << std::endl;
+    }   
     std::cout << std::endl;
 }
 
@@ -249,15 +278,39 @@ std::string unlines(std::vector<std::string> s, char c) {
 }
 
 void AgendaUI::printMeetings(std::list<Meeting> t_meetings) {
-    // TODO
-    std::cout << "title\t\tsponsor\t\tstart time\t\tend time\t\tparticipators" << std::endl;
+    // prewrite to vectors
+    std::vector<std::string> titles, sponsors, sts, ets, parts;
     auto it = t_meetings.begin();
     for (; it != t_meetings.end(); ++it) {
-        std::cout << (*it).getTitle() << "\t\t" 
-             << (*it).getSponsor() << "\t\t" 
-             << Date::dateToString((*it).getStartDate()) << "\t\t" 
-             << Date::dateToString((*it).getEndDate()) << "\t\t"
-             << unlines((*it).getParticipator(), ',') << std::endl;
+        titles.push_back((*it).getTitle());
+        sponsors.push_back((*it).getSponsor());
+        sts.push_back(Date::dateToString((*it).getStartDate()));
+        ets.push_back(Date::dateToString((*it).getEndDate()));
+        parts.push_back(unlines((*it).getParticipator(), ','));
     }
+    // width?
+    int widtitle, widsponsor, widsts, widets, widparts;
+    widtitle = std::max(5, maxlength(titles)) + 3;
+    widsponsor = std::max(7, maxlength(sponsors)) + 3;
+    widsts = std::max(10, maxlength(sts)) + 3;
+    widets = std::max(8, maxlength(ets)) + 3;
+    widparts = std::max(13, maxlength(parts)) + 3;
+    // write!
+    std::cout 
+    << "title" << fillblank(widtitle, 5) 
+    << "sponsor" << fillblank(widsponsor, 7) 
+    << "start time" << fillblank(widsts, 10) 
+    << "end time" << fillblank(widets, 8) 
+    << "participators" << fillblank(widparts, 13) 
+    << std::endl;
+    for (int i = 0; i < titles.size(); i++) {
+        std::cout 
+        << titles[i] << fillblank(widtitle, titles[i].length()) 
+        << sponsors[i] << fillblank(widsponsor, sponsors[i].length()) 
+        << sts[i] << fillblank(widsts, sts[i].length())
+        << ets[i] << fillblank(widets, ets[i].length())
+        << parts[i] << fillblank(widparts, parts[i].length())
+        << std::endl;
+    }   
     std::cout << std::endl;
 }
