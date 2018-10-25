@@ -3,7 +3,7 @@
 int maxlength(std::vector<std::string> v) {
     int l = 0;
     for (int i = 0; i < v.size(); i++)
-        l = std::max(l, (int)v[i].length());
+        l = std::max(l, static_cast<int>(v[i].length()));
     return l;
 }
 
@@ -15,19 +15,21 @@ std::string fillblank(int total, int used) {
 }
 
 AgendaUI::AgendaUI() {
-
 }
 
 void AgendaUI::OperationLoop(void) {
     bool cont;
     do {
-        //std::cout << std::endl;
-        std::cout << "----------------------- Agenda -------------------------------" << std::endl;
+        std::cout
+        << "----------------------- Agenda -------------------------------"
+        << std::endl;
         std::cout << "Action :" << std::endl;
-        if (this->m_userName == "") {  // not logged in    
-            std::cout << "l   - log in Agenda by user name and password" << std::endl;
+        if (this->m_userName == "") {  // not logged in
+            std::cout
+                << "l   - log in Agenda by user name and password"
+                << std::endl;
             std::cout << "r   - register an Agenda account" << std::endl;
-            std::cout << "q   - quit Agenda" << std::endl; 
+            std::cout << "q   - quit Agenda" << std::endl;
         } else {  // logged in
             std::cout << "o   - log out Agenda" << std::endl;
             std::cout << "dc  - delete Agenda account" << std::endl;
@@ -41,7 +43,10 @@ void AgendaUI::OperationLoop(void) {
             std::cout << "dm  - delete meeting by title" << std::endl;
             std::cout << "da  - delete all meetings" << std::endl;
         }
-        std::cout << "--------------------------------------------------------------" << std::endl;
+        std::cout
+            << "--------------------------------------------------------------"
+            << std::endl;
+
         std::cout << std::endl;
 
         std::string cmd = this->getOperation();
@@ -55,10 +60,10 @@ void AgendaUI::startAgenda(void) {
 
 std::string AgendaUI::getOperation() {
     std::cout
-    << (this->m_userName == "" ? "Agenda" : "Agenda@" + this->m_userName) 
-    << " : " 
-    << (this->m_userName == "" ? "~$ " : "# ");
-    
+        << (this->m_userName == "" ? "Agenda" : "Agenda@" + this->m_userName)
+        << " : "
+        << (this->m_userName == "" ? "~$ " : "# ");
+
     std::string op;
     std::cin >> op;
     std::cout << std::endl;
@@ -119,7 +124,10 @@ void AgendaUI::userLogIn(void) {
 }
 
 void AgendaUI::userRegister(void) {
-    std::cout << "[register] [user name] [password] [email] [phone]" << std::endl;
+    std::cout
+        << "[register] [user name] [password] [email] [phone]"
+        << std::endl;
+
     std::cout << "[register] ";
 
     std::string u, p, e, t;
@@ -155,7 +163,6 @@ void AgendaUI::listAllUsers(void) {
     std::cout << "[list all users]" << std::endl;
     std::cout << std::endl;
     std::list<User> ul = this->m_agendaService.listAllUsers();
-    // TODO
     // prewrite to vectors
     std::vector<std::string> usrnames, emails, phones;
     auto it = ul.begin();
@@ -170,14 +177,19 @@ void AgendaUI::listAllUsers(void) {
     widemail = std::max(5, maxlength(emails)) + 3;
     widphone = std::max(5, maxlength(phones)) + 3;
     // write!
-    std::cout << "name" << fillblank(widname, 4) << "email" << fillblank(widemail, 5) << "phone" << fillblank(widphone, 5) << std::endl;
-    for (int i = 0; i < usrnames.size(); i++) {
-        std::cout 
-        << usrnames[i] << fillblank(widname, usrnames[i].length()) 
-        << emails[i] << fillblank(widemail, emails[i].length()) 
-        << phones[i] << fillblank(widphone, phones[i].length()) 
+    std::cout
+        << "name" << fillblank(widname, 4)
+        << "email" << fillblank(widemail, 5)
+        << "phone" << fillblank(widphone, 5)
         << std::endl;
-    }   
+
+    for (int i = 0; i < usrnames.size(); i++) {
+        std::cout
+            << usrnames[i] << fillblank(widname, usrnames[i].length())
+            << emails[i] << fillblank(widemail, emails[i].length())
+            << phones[i] << fillblank(widphone, phones[i].length())
+            << std::endl;
+    }
     std::cout << std::endl;
 }
 
@@ -188,18 +200,24 @@ void AgendaUI::createMeeting(void) {
     std::vector<std::string> parts;
     std::cin >> num;
     for (int i = 1; i <= num; i++) {
-        std::cout << "[create meeting] [please enter the participator " << i << " ]" << std::endl;
+        std::cout
+            << "[create meeting] [please enter the participator " << i << " ]"
+            << std::endl;
+
         std::cout << "[create meeting] ";
         std::string name;
         std::cin >> name;
         parts.push_back(name);
     }
-    std::cout << "[create meeting] [title] [start time(yyyy-mm-dd/hh:mm)] [end time(yyyy-mm-dd/hh:mm)]" << std::endl;
+    std::cout
+        << "[create meeting] [title] [start time(yyyy-mm-dd/hh:mm)] [end time(yyyy-mm-dd/hh:mm)]"  // NOLINT
+        << std::endl;
     std::string t, st, et;
     std::cout << "[create meeting] ";
     std::cin >> t >> st >> et;
 
-    if (this->m_agendaService.createMeeting(this->m_userName, t, st, et, parts) == true) {
+    if (this->m_agendaService.createMeeting \
+            (this->m_userName, t, st, et, parts) == true) {
         std::cout << "[create meeting] succeed!" << std::endl;
     } else {
         std::cout << "[create meeting] error!" << std::endl;
@@ -210,21 +228,24 @@ void AgendaUI::createMeeting(void) {
 void AgendaUI::listAllMeetings(void) {
     std::cout << "[list all meetings]" << std::endl;
     std::cout << std::endl;
-    this->printMeetings(this->m_agendaService.listAllMeetings(this->m_userName));
+    this->printMeetings \
+        (this->m_agendaService.listAllMeetings(this->m_userName));
     std::cout << std::endl;
 }
 
 void AgendaUI::listAllSponsorMeetings(void) {
     std::cout << "[list all sponsor meetings]" << std::endl;
     std::cout << std::endl;
-    this->printMeetings(this->m_agendaService.listAllSponsorMeetings(this->m_userName));
+    this->printMeetings \
+        (this->m_agendaService.listAllSponsorMeetings(this->m_userName));
     std::cout << std::endl;
 }
 
 void AgendaUI::listAllParticipateMeetings(void) {
     std::cout << "[list all participator meetings]" << std::endl;
     std::cout << std::endl;
-    this->printMeetings(this->m_agendaService.listAllParticipateMeetings(this->m_userName));
+    this->printMeetings \
+        (this->m_agendaService.listAllParticipateMeetings(this->m_userName));
     std::cout << std::endl;
 }
 
@@ -233,16 +254,21 @@ void AgendaUI::queryMeetingByTitle(void) {
     std::cout << "[query meeting] " << std::endl;
     std::string t;
     std::cin >> t;
-    this->printMeetings(this->m_agendaService.meetingQuery(this->m_userName, t));
+    this->printMeetings \
+        (this->m_agendaService.meetingQuery(this->m_userName, t));
     std::cout << std::endl;
 }
 
 void AgendaUI::queryMeetingByTimeInterval(void) {
-    std::cout << "[query meetings] [start time(yyyy-mm-dd/hh:mm)] [end time(yyyy-mm-dd/hh:mm)]" << std::endl;
+    std::cout
+        << "[query meetings] [start time(yyyy-mm-dd/hh:mm)] [end time(yyyy-mm-dd/hh:mm)]"  // NOLINT
+        << std::endl;
+
     std::cout << "[query meetings] ";
     std::string st, et;
     std::cin >> st >> et;
-    this->printMeetings(this->m_agendaService.meetingQuery(this->m_userName, st, et));
+    this->printMeetings \
+        (this->m_agendaService.meetingQuery(this->m_userName, st, et));
     std::cout << std::endl;
 }
 
@@ -296,21 +322,21 @@ void AgendaUI::printMeetings(std::list<Meeting> t_meetings) {
     widets = std::max(8, maxlength(ets)) + 3;
     widparts = std::max(13, maxlength(parts)) + 3;
     // write!
-    std::cout 
-    << "title" << fillblank(widtitle, 5) 
-    << "sponsor" << fillblank(widsponsor, 7) 
-    << "start time" << fillblank(widsts, 10) 
-    << "end time" << fillblank(widets, 8) 
-    << "participators" << fillblank(widparts, 13) 
-    << std::endl;
-    for (int i = 0; i < titles.size(); i++) {
-        std::cout 
-        << titles[i] << fillblank(widtitle, titles[i].length()) 
-        << sponsors[i] << fillblank(widsponsor, sponsors[i].length()) 
-        << sts[i] << fillblank(widsts, sts[i].length())
-        << ets[i] << fillblank(widets, ets[i].length())
-        << parts[i] << fillblank(widparts, parts[i].length())
+    std::cout
+        << "title" << fillblank(widtitle, 5)
+        << "sponsor" << fillblank(widsponsor, 7)
+        << "start time" << fillblank(widsts, 10)
+        << "end time" << fillblank(widets, 8)
+        << "participators" << fillblank(widparts, 13)
         << std::endl;
-    }   
+    for (int i = 0; i < titles.size(); i++) {
+        std::cout
+            << titles[i] << fillblank(widtitle, titles[i].length())
+            << sponsors[i] << fillblank(widsponsor, sponsors[i].length())
+            << sts[i] << fillblank(widsts, sts[i].length())
+            << ets[i] << fillblank(widets, ets[i].length())
+            << parts[i] << fillblank(widparts, parts[i].length())
+            << std::endl;
+    }
     std::cout << std::endl;
 }
