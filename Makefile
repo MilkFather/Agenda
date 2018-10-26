@@ -9,7 +9,7 @@ TEST_SRC_PTH := ./test/
 
 EXEC := agenda
 
-CC := g++ -g -std=c++11 -I$(HEADER_PTH)
+CC := g++ -O3 -std=c++11 -I$(HEADER_PTH)
 
 build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 	@mkdir -p $(BIN_PTH)
