@@ -1,5 +1,7 @@
-./unittest
-./unittest.dSYM
 **/.DS_Store
 *.o
 bin/*
+data/*
+src_ref/
+build/*
+test/bin/*

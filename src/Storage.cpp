@@ -116,7 +116,12 @@ bool Storage::writeToFile(void) {
             usr << "\"" << CSVize(u.getName()) << "\",\""
             << CSVize(u.getPassword()) << "\",\""
             << CSVize(u.getEmail()) << "\",\""
-            << CSVize(u.getPhone()) << "\"" << std::endl;
+            << CSVize(u.getPhone()) << "\"";
+            auto it2 = it;
+            it2++;
+            if (it2 != this->m_userList.end()) {
+                usr << std::endl;
+            }
         }
         usr.close();
     } else {
@@ -131,7 +136,12 @@ bool Storage::writeToFile(void) {
             << flat(m.getParticipator(), '&') << "\",\""
             << CSVize(Date::dateToString(m.getStartDate())) << "\",\""
             << CSVize(Date::dateToString(m.getEndDate())) << "\",\""
-            << CSVize(m.getTitle()) << "\"" << std::endl;
+            << CSVize(m.getTitle()) << "\"";
+            auto it2 = it;
+            it2++;
+            if (it2 != this->m_meetingList.end()) {
+                usr << std::endl;
+            }
         }
         meeting.close();
     } else {
