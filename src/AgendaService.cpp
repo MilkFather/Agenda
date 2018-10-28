@@ -61,10 +61,10 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
         return false;  // duplicate title
     
     // free time check
-    if (!m_storage->queryMeeting([userName, sd, ed](const Meeting &x) {return x.getSponsor() == userName && x.getStartDate() < ed && x.getEndDate() > sd;}).empty())
+    if (!m_storage->queryMeeting([userName, sd, ed](const Meeting &x) {return (x.getSponsor() == userName || x.isParticipator(userName)) && x.getStartDate() < ed && x.getEndDate() > sd;}).empty())
         return false;  // sponsor is busy
     for (auto n: participator) {
-        if (!m_storage->queryMeeting([n, sd, ed](const Meeting &x) {return x.getSponsor() == n && x.getStartDate() < ed && x.getEndDate() > sd;}).empty())
+        if (!m_storage->queryMeeting([n, sd, ed](const Meeting &x) {return (x.getSponsor() == n || x.isParticipator(n)) && x.getStartDate() < ed && x.getEndDate() > sd;}).empty())
             return false;  // participator is busy
     }
     
@@ -122,9 +122,9 @@ std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, cons
 }
 
 std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, const std::string &startDate, const std::string &endDate) const {
-    Date sd(startDate), ed(startDate);
+    Date sd(startDate), ed(endDate);
     std::list<Meeting> ml;
-    if (!Date::isValid(sd) || Date::isValid(ed))
+    if (!Date::isValid(sd) || !Date::isValid(ed))
         return ml;  // query date invalid
     
     return m_storage->queryMeeting([userName, sd, ed](const Meeting &x) {return (x.getSponsor() == userName || x.isParticipator(userName)) && x.getEndDate() >= sd && x.getStartDate() <= ed;});

@@ -79,6 +79,7 @@ bool Storage::readFromFile(void) {
             }
         }
     } else {
+        this->m_userList.clear();
         return false;
     }
 
@@ -99,6 +100,7 @@ bool Storage::readFromFile(void) {
             }
         }
     } else {
+        this->m_meetingList.clear();
         return false;
     }
     this->m_dirty = false;
