@@ -92,7 +92,6 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
     return true;
 }
 
-// ???
 bool AgendaService::addMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
     if (userName == participator)
         return false;  // sponsor is participator
