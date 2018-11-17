@@ -28,7 +28,7 @@ $(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUIL
 	@mkdir -p $(BUILD_PTH); 
 	$(CC) -c -o $@ $<
 
-$(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(BUILD_PTH)Storage.o
+$(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(HEADER_PTH)AgendaException.hpp $(BUILD_PTH)Storage.o
 	@mkdir -p $(BUILD_PTH); 
 	$(CC) -c -o $@ $<
 
@@ -55,9 +55,9 @@ lint :
 	cpplint --filter=-legal/copyright,-build/header_guard,-build/include,-readability/streams src/*.hpp src/*.cpp
 
 clean :
-	rm -f ./bin/*
-	rm -f ./build/*
-	rm -f ./test/bin/*
+	rm -rf ./bin/*
+	rm -rf ./build/*
+	rm -rf ./test/bin/*
 
 test-user : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp $(TEST_SRC_PTH)UserTest.cpp
 	$(CCT) -o $(TEST_BIN_PTH)test-user $(SRC_PTH)User.cpp $(TEST_SRC_PTH)UserTest.cpp

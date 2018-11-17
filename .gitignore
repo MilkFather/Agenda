@@ -5,3 +5,4 @@ data/*
 src_ref/
 build/*
 test/bin/*
+**/.vscode
