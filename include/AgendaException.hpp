@@ -107,4 +107,9 @@ public:
     UnknownException(): AgendaException("Unknown exception occurred") {};
 };
 
+class InterruptedException: public AgendaException {
+public:
+    InterruptedException(): AgendaException("Action cancelled by user") {};
+};
+
 #endif
