@@ -1,10 +1,5 @@
-BIN_PTH_WIN := ./bin/win/
-BIN_PTH_OSX := ./bin/osx/
-BIN_PTH_LINUX := ./bin/linux/
-
-BUILD_PTH_WIN := ./build/win/
-BUILD_PTH_OSX := ./build/osx/
-BUILD_PTH_LINUX := ./build/linux/
+BIN_PTH := ./bin/osx/
+BUILD_PTH := ./build/osx/
 
 DATA_PTH := ./data/
 
@@ -16,25 +11,16 @@ TEST_GTEST_PTH := ./test/src/gtest/
 TEST_GTEST_INT_PTH := ./test/src/gtest/internal/
 TEST_BIN_PTH := ./test/bin/
 
-EXEC_WIN := agenda.exe
-EXEC_OSX := agenda
-EXEC_LINUX := agenda
+EXEC := agenda
 
 CC := g++ -O3 -std=c++11 -I$(HEADER_PTH)
-CCGW := i686-w64-mingw32-g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
 CCT := g++ -g -std=c++11 -I$(HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread
 
 build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
-	@mkdir -p $(BIN_PTH_WIN)
-	@mkdir -p $(BIN_PTH_OSX)
-	@mkdir -p $(BIN_PTH_LINUX)
+	@mkdir -p $(BIN_PTH)
+	@mkdir -p $(BUILD_PTH)
 
-	@mkdir -p $(BUILD_PTH_WIN)
-	@mkdir -p $(BUILD_PTH_OSX)
-	@mkdir -p $(BUILD_PTH_LINUX)
-
-	$(CC) -o $(BIN_PTH_OSX)$(EXEC_OSX) $(BUILD_PTH_OSX)Agenda.o $(BUILD_PTH_OSX)AgendaUI.o $(BUILD_PTH_OSX)AgendaService.o $(BUILD_PTH_OSX)Storage.o $(BUILD_PTH_OSX)Meeting.o $(BUILD_PTH_OSX)Date.o $(BUILD_PTH_OSX)User.o
-	$(CCGW) -o $(BIN_PTH_WIN)$(EXEC_WIN) $(BUILD_PTH_WIN)Agenda.o $(BUILD_PTH_WIN)AgendaUI.o $(BUILD_PTH_WIN)AgendaService.o $(BUILD_PTH_WIN)Storage.o $(BUILD_PTH_WIN)Meeting.o $(BUILD_PTH_WIN)Date.o $(BUILD_PTH_WIN)User.o
+	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 
 $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@mkdir -p $(BUILD_PTH); 
