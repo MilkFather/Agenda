@@ -6,11 +6,11 @@
 #include <string>
 
 class AgendaUI {
-   public:
+public:
     AgendaUI();
     void OperationLoop(void);
 
-   private:
+private:
     /**
      * constructor
      */
@@ -27,6 +27,11 @@ class AgendaUI {
      * @return if the operationloop continue
      */
     bool executeOperation(std::string t_operation);
+
+    /**
+     * print available commands
+     */
+    void printActions(void);
 
     /**
      * user Login

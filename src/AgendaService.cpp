@@ -10,38 +10,62 @@ AgendaService::~AgendaService() {
     quitAgenda();
 }
 
-bool AgendaService::userLogIn(const std::string &userName, const std::string &password) {
-    bool fail = m_storage->queryUser([userName, password](const User & x) -> bool {
-        return (x.getName() == userName && x.getPassword() == password);
-    }).empty();
-
-    if (fail) {
-        throw UserPasswordNotMatchException();
-        return false;
-    } else {
-        return true;
+void AgendaService::checkUserExistence(const string userName) const {
+    if (m_storage->queryUser([userName](const User &x) -> bool {
+        return (x.getName() == userName);
+    }).empty()) {
+        throw UserNotExistException(userName);          // throw when not exist
     }
 }
 
-bool AgendaService::userRegister(const std::string &userName, const std::string &password, const std::string &email, const std::string &phone) {
+void AgendaService::checkTimeFormat(const string t) const {
+    if (!Date::isValid(Date(t))) {
+        throw TimeInvalidException(t);                  // dates are invalid
+    }
+}
+
+void AgendaService::checkUserBusy(const string usr, const Date sd, const Date ed) const {
+    if (!m_storage->queryMeeting([usr, sd, ed](const Meeting &x) -> bool {
+        return ((x.getSponsor() == usr || x.isParticipator(usr))) && x.getStartDate() < ed && x.getEndDate() > sd;
+    }).empty()) {
+        throw UserBusyException(usr, Date::dateToString(sd), Date::dateToString(ed));                   // is busy
+    }
+}
+
+Meeting AgendaService::getMeetingBySponsorAndTitle(const string sponsor, const string title) const {
+    auto ls = m_storage->queryMeeting([title](const Meeting &x) -> bool {
+        return x.getTitle() == title;
+    });
+    if (ls.size() != 1) {
+        throw MeetingNotExistException(title);
+    }
+    auto m = *ls.begin();
+    if (m.getSponsor() != sponsor) {
+        throw MeetingAccessDeniedExcpetion(title, sponsor);
+    }
+    return m;
+}
+
+void AgendaService::userLogIn(const std::string &userName, const std::string &password) {
+    if (m_storage->queryUser([userName, password](const User & x) -> bool {
+        return (x.getName() == userName && x.getPassword() == password);
+    }).empty()) {
+        throw UserPasswordNotMatchException();
+    }
+}
+
+void AgendaService::userRegister(const std::string &userName, const std::string &password, const std::string &email, const std::string &phone) {
     if (!m_storage->queryUser([userName](const User &x) -> bool {
         return (x.getName() == userName);
     }).empty()) {
-        throw UsernameDuplicateException(userName);
-        return false;  // creating existing user name.
+        throw UsernameDuplicateException(userName);     // creating existing user name.
     }
 
     m_storage->createUser(User(userName, password, email, phone));
-    return true;
 }
 
-bool AgendaService::deleteUser(const std::string &userName, const std::string &password) {
-    if (m_storage->queryUser([userName, password](const User &x) -> bool {
-        return (x.getName() == userName && x.getPassword() == password);
-    }).empty()) {
-        throw UserPasswordNotMatchException();
-        return false;  // incorrect username or password
-    }
+void AgendaService::deleteUser(const std::string &userName, const std::string &password) {
+    userLogIn(userName, password);                      // the correct user & password
     
     deleteAllMeetings(userName);
     for (auto meeting: listAllParticipateMeetings(userName))
@@ -53,7 +77,6 @@ bool AgendaService::deleteUser(const std::string &userName, const std::string &p
     m_storage->deleteMeeting([](const Meeting &x) -> bool {
         return x.getParticipator().empty();
     });
-    return true;
 }
 
 std::list<User> AgendaService::listAllUsers(void) const {
@@ -62,136 +85,68 @@ std::list<User> AgendaService::listAllUsers(void) const {
     });
 }
 
-bool AgendaService::createMeeting(const std::string &userName, const std::string &title, const std::string &startDate, const std::string &endDate, const std::vector<std::string> &participator) {
+void AgendaService::createMeeting(const std::string &userName, const std::string &title, const std::string &startDate, const std::string &endDate, const std::vector<std::string> &participator) {
     // user basic check
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the sponsor does not exist
-    }
-    
+    checkUserExistence(userName);                                   // the sponsor exists?
     if (participator.empty()) {
-        throw ParticipatorEmptyException(title);
-        return false;  // no participators
+        throw ParticipatorEmptyException(title);                    // no participators
     }
 
     std::set<std::string> partpool;
     for (auto n: participator) {
         if (partpool.find(n) != partpool.end()) {
-            throw ParticipatorDuplicateException(title, n);
-            return false;  // duplicate participator
+            throw ParticipatorDuplicateException(title, n);         // duplicate participator
         }
         if (n == userName) {
-            throw SponsorIsParticipatorExcpetion(title, n);
-            return false;  // sponsor is participator
+            throw SponsorIsParticipatorExcpetion(title, n);         // sponsor is participator
         }
-        if (m_storage->queryUser([n](const User & x) -> bool {
-            return x.getName() == n;
-        }).empty()) {
-            throw UserNotExistException(n);
-            return false;  // participator does not exist
-        }
+        checkUserExistence(n);                                      // the participator exists?
         partpool.insert(n);
     }
     
     // time basic check
+    checkTimeFormat(startDate);                                     // dates are invalid?
+    checkTimeFormat(endDate);                                       // dates are invalid?
     Date sd(startDate), ed(endDate);
-    if (!Date::isValid(sd)) {
-        throw TimeInvalidException(startDate);
-        return false;   // dates are invalid
-    }
-    if (!Date::isValid(ed)) {
-        throw TimeInvalidException(endDate);
-        return false;   // dates are invalid
-    }
     if (sd >= ed) {
-        throw TimeIntervalInvalidException(startDate, endDate);
-        return false;  // the start date is not earlier than end date
+        throw TimeIntervalInvalidException(startDate, endDate);     // the start date is not earlier than end date
     }
-        
     
     // meeting info basic check
     if (!m_storage->queryMeeting([title](const Meeting & x) -> bool {
         return x.getTitle() == title;
     }).empty()) {
-        throw MeetingDuplicateException(title);
-        return false;  // duplicate title
+        throw MeetingDuplicateException(title);                     // duplicate title
     }
     
     // free time check
-    if (!m_storage->queryMeeting([userName, sd, ed](const Meeting &x) -> bool {
-        return ((x.getSponsor() == userName || x.isParticipator(userName))) && x.getStartDate() < ed && x.getEndDate() > sd;
-    }).empty()) {
-        throw UserBusyException(title, userName);
-        return false;  // sponsor is busy
-    }
-
+    checkUserBusy(userName, sd, ed);                                // sponsor is busy
     for (auto n: participator) {
-        if (!m_storage->queryMeeting([n, sd, ed](const Meeting &x) -> bool {
-            return (x.getSponsor() == n || x.isParticipator(n)) && x.getStartDate() < ed && x.getEndDate() > sd;
-        }).empty()) {
-            throw UserBusyException(title, n);
-            return false;  // participator is busy
-        }
+        checkUserBusy(n, sd, ed);                                   // participator is busy
     }
     
     // all done
     m_storage->createMeeting(Meeting(userName, participator, sd, ed, title));
-    return true;
 }
 
-bool AgendaService::addMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the sponsor does not exist
-    }
+void AgendaService::addMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
+    checkUserExistence(userName);                      // the sponsor does not exist
+    checkUserExistence(participator);
     
-    if (m_storage->queryUser([participator](const User &x) -> bool {
-        return x.getName() == participator;
-    }).empty()) {
-        throw UserNotExistException(participator);
-        return false;  // the participator does not exist
-    }
-    
-    auto ls = m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
-        return (x.getSponsor() == userName && x.getTitle() == title);
-    });
-    if (ls.size() != 1) {
-        throw MeetingNotExistException(title);
-        return false;  // specific meeting not exist or duplicate meetings
-    }
-    auto m = *(ls.begin());
+    auto m = getMeetingBySponsorAndTitle(userName, title);          // should check the existence of meeting and permission
     if (m.isParticipator(participator)) {
-        throw ParticipatorDuplicateException(title, participator);
-        return false;  // already in
+        throw ParticipatorDuplicateException(title, participator);  // already in
     }
     
     if (userName == participator) {
-        throw SponsorIsParticipatorExcpetion(title, userName);
-        return false;  // sponsor is participator
+        throw IsSponsorException(title, userName);                  // sponsor is participator
     }
     
     if (m.isParticipator(userName)) {
-        throw ParticipatorDuplicateException(title, userName);
-        return false;  // username is participator
+        throw ParticipatorDuplicateException(title, userName);      // username is participator
     }
     
-    if (!m_storage->queryMeeting([participator, m](const Meeting &x) -> bool {
-        return x.getSponsor() == participator && x.getStartDate() < m.getEndDate() && x.getEndDate() > m.getStartDate();
-    }).empty()) {
-        throw UserBusyException(title, participator);
-        return false;  // the participator sponsors a meeting that has conflict time
-    }
-
-    if (!m_storage->queryMeeting([participator, m](const Meeting &x) -> bool {
-        return x.isParticipator(participator) && x.getStartDate() < m.getEndDate() && x.getEndDate() > m.getStartDate();
-    }).empty()) {
-        throw UserBusyException(title, participator);
-        return false;  // the participator participates a meeting that has conflict time
-    }
+    checkUserBusy(participator, m.getStartDate(), m.getEndDate());  // participator is busy
     
     // all done, maybe
     int updated = m_storage->updateMeeting([title, userName](const Meeting &x) -> bool {
@@ -201,44 +156,21 @@ bool AgendaService::addMeetingParticipator(const std::string &userName, const st
     });
     if (updated <= 0) {
         throw MeetingNotExistException(title);
-        return false;
-    } else {
-        return true;
     }
 }
 
-bool AgendaService::removeMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the sponsor does not exist
-    }
+void AgendaService::removeMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
+    checkUserExistence(userName);
+    checkUserExistence(participator);
     
-    if (m_storage->queryUser([participator](const User &x) -> bool {
-        return x.getName() == participator;
-    }).empty()) {
-        throw UserNotExistException(participator);
-        return false;  // the participator does not exist
-    }
-    
-    auto ls = m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
-        return x.getSponsor() == userName && x.getTitle() == title;
-    });
-    if (ls.size() != 1) {
-        throw MeetingNotExistException(title);
-        return false;  // specific meeting not exist or duplicate meetings
-    }
+    auto m = getMeetingBySponsorAndTitle(userName, title);          // should check the existence of meeting and permission
     
     if (userName == participator) {
-        throw SponsorIsParticipatorExcpetion(title, userName);
-        return false;  // sponsor cannot remove itself
+        throw IsSponsorException(title, userName);      // sponsor cannot remove itself
     }
-    
-    auto m = *(ls.begin());
+
     if (!m.isParticipator(participator)) {
-        throw NotAMemberOfMeetingException(title, participator);
-        return false;  // not in the meeting
+        throw NotAMemberOfMeetingException(title, participator);    // not in the meeting
     }
     
     // all done
@@ -253,26 +185,25 @@ bool AgendaService::removeMeetingParticipator(const std::string &userName, const
     });
 
     if (updated <= 0) {
-        throw MeetingNotExistException(title);
-        return false;
-    } else {
-        return true;
+        throw UnknownException();
     }
 }
 
-bool AgendaService::quitMeeting(const std::string &userName, const std::string &title) {
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the sponsor does not exist
+void AgendaService::quitMeeting(const std::string &userName, const std::string &title) {
+    checkUserExistence(userName);
+
+    auto ls = m_storage->queryMeeting([title](const Meeting &x) -> bool {
+        return x.getTitle() == title;
+    });
+    if (ls.size() != 1) {
+        throw MeetingNotExistException(title);          // given title exists?
     }
-    
-    if (m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
-        return (x.getSponsor() != userName && x.isParticipator(userName) && x.getTitle() == title);
-    }).empty()) {
-        throw MeetingNotExistException(title);
-        return false;  // not exist or duplicate
+    auto m = *ls.begin();
+    if (m.getSponsor() == userName) {
+        throw IsSponsorException(title, userName);      // I delete sponsor?
+    }
+    if (!m.isParticipator(userName)) {
+        throw NotAMemberOfMeetingException(title, userName);    // Am I in it?
     }
     
     int updated = m_storage->updateMeeting([userName, title](const Meeting &x) -> bool {
@@ -286,51 +217,26 @@ bool AgendaService::quitMeeting(const std::string &userName, const std::string &
     });
 
     if (updated <= 0) {
-        throw MeetingNotExistException(title);
-        return false;
-    } else {
-        return true;
+        throw UnknownException();
     }
 }
 
 std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, const std::string &title) const {
-    std::list<Meeting> m;
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return m;  // the user does not exist, returning empty list
-    }
+    checkUserExistence(userName);
     
-    m = m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
+    return m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
         return x.getTitle() == title && (x.getSponsor() == userName || x.isParticipator(userName));
     });
-    
-    return m;
 }
 
 std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, const std::string &startDate, const std::string &endDate) const {
+    checkUserExistence(userName);
+    checkTimeFormat(startDate);
+    checkTimeFormat(endDate);
+    
     Date sd(startDate), ed(endDate);
-    std::list<Meeting> ml;
-    
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return ml;  // the user does not exist, returning empty list
-    }
-    
-    if (!Date::isValid(sd)) {
-        throw TimeInvalidException(startDate);
-        return ml;  // query date invalid
-    }
-    if (!Date::isValid(ed)) {
-        throw TimeInvalidException(endDate);
-        return ml;  // query date invalid
-    }
     if (sd > ed) {
-        throw TimeIntervalInvalidException(startDate, endDate);
-        return ml;  // query date invalid
+        throw TimeIntervalInvalidException(startDate, endDate);     // query date invalid
     }
     
     return m_storage->queryMeeting([userName, sd, ed](const Meeting &x) -> bool {
@@ -339,13 +245,7 @@ std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, cons
 }
 
 std::list<Meeting> AgendaService::listAllMeetings(const std::string &userName) const {
-    std::list<Meeting> m;
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return m;  // the user does not exist, returning empty list
-    }
+    checkUserExistence(userName);
     
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
         return x.getSponsor() == userName || x.isParticipator(userName);
@@ -353,64 +253,39 @@ std::list<Meeting> AgendaService::listAllMeetings(const std::string &userName) c
 }
 
 std::list<Meeting> AgendaService::listAllSponsorMeetings(const std::string &userName) const {
-    std::list<Meeting> m;
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return m;  // the user does not exist, returning empty list
-    }
-    
+    checkUserExistence(userName);
+
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
         return x.getSponsor() == userName;
     });
 }
 
 std::list<Meeting> AgendaService::listAllParticipateMeetings(const std::string &userName) const {
-    std::list<Meeting> m;
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return m;  // the user does not exist, returning empty list
-    }
+    checkUserExistence(userName);
     
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
         return x.isParticipator(userName);
     });
 }
 
-bool AgendaService::deleteMeeting(const std::string &userName, const std::string &title) {
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the user does not exist
-    }
+void AgendaService::deleteMeeting(const std::string &userName, const std::string &title) {
+    checkUserExistence(userName);
+    getMeetingBySponsorAndTitle(userName, title);
     
     int deleted = m_storage->deleteMeeting([userName, title](const Meeting &x) -> bool {
         return (x.getSponsor() == userName) && (x.getTitle() == title);
     });
     if (deleted <= 0) {
-        throw MeetingNotExistException(title);
-        return false;
-    } else {
-        return true;
+        throw UnknownException();
     }
 }
 
-bool AgendaService::deleteAllMeetings(const std::string &userName) {
-    if (m_storage->queryUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    }).empty()) {
-        throw UserNotExistException(userName);
-        return false;  // the user does not exist
-    }
+void AgendaService::deleteAllMeetings(const std::string &userName) {
+    checkUserExistence(userName);
     
     m_storage->deleteMeeting([userName](const Meeting &x) -> bool {
         return x.getSponsor() == userName;
     });
-    return true;
 }
 
 void AgendaService::startAgenda(void) {

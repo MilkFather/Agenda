@@ -74,20 +74,37 @@ public:
 
 class UserBusyException: public AgendaException {
 public:
-    UserBusyException(string t, string usr):
-        AgendaException("The user \"" + usr + "\" is busy during the meeting \"" + t + "\"") {};
+    UserBusyException(string usr, string sd, string ed):
+        AgendaException("The user \"" + usr + "\" is busy from " + sd + " to " + ed) {};
 };
 
 class MeetingNotExistException: public AgendaException {
 public:
     MeetingNotExistException(string t):
-        AgendaException("The requested meeting \"" + t + "\" is not found, or you don\'t have the privilege to access it") {};
+        AgendaException("The requested meeting \"" + t + "\" is not found") {};
+};
+
+class MeetingAccessDeniedExcpetion: public AgendaException {
+public:
+    MeetingAccessDeniedExcpetion(string t, string u):
+        AgendaException("\"" + u + "\" don't have the permission to modify \"" + t + "\"") {};
+};
+
+class IsSponsorException: public AgendaException {
+public:
+    IsSponsorException(string t, string u):
+        AgendaException("\"" + u + "\" is the sponsor of \"" + t + "\"") {};
 };
 
 class NotAMemberOfMeetingException: public AgendaException {
 public:
     NotAMemberOfMeetingException(string t, string u):
         AgendaException("\"" + u + "\" is not a member of the meeting \"" + t + "\"") {};
+};
+
+class UnknownException: public AgendaException {
+public:
+    UnknownException(): AgendaException("Unknown exception occurred") {};
 };
 
 #endif

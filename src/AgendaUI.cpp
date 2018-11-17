@@ -23,43 +23,15 @@ std::string fillblank(int total, int used) {
 }
 
 AgendaUI::AgendaUI() {
+    std::cout << "Agenda 1.0" << std::endl;
+    std::cout << "Copyright 2018 Sun Yat-sen University, all rights reserved." << std::endl;
+    std::cout << "For a list of available commands, please type \"h\"" << std::endl;
+    std::cout << std::endl;
 }
 
 void AgendaUI::OperationLoop(void) {
     bool cont;
     do {
-        std::cout
-        << "----------------------- Agenda -------------------------------"
-        << std::endl;
-        std::cout << "Action :" << std::endl;
-        if (this->m_userName == "") {  // not logged in
-            std::cout
-                << "l   - log in Agenda by user name and password"
-                << std::endl;
-            std::cout << "r   - register an Agenda account" << std::endl;
-            std::cout << "q   - quit Agenda" << std::endl;
-        } else {  // logged in
-            std::cout << "o   - log out Agenda" << std::endl;
-            std::cout << "dc  - delete Agenda account" << std::endl;
-            std::cout << "lu  - list all Agenda user" << std::endl;
-            std::cout << "cm  - create a meeting" << std::endl;
-            std::cout << "amp - add meeting participator" << std::endl;
-            std::cout << "rmp - remove meeting participator" << std::endl;
-            std::cout << "rqm - request to quit meeting" << std::endl;
-            std::cout << "la  - list all meetings" << std::endl;
-            std::cout << "las - list all sponsor meetings" << std::endl;
-            std::cout << "lap - list all participate meetings" << std::endl;
-            std::cout << "qm  - query meeting by title" << std::endl;
-            std::cout << "qt  - query meeting by time interval" << std::endl;
-            std::cout << "dm  - delete meeting by title" << std::endl;
-            std::cout << "da  - delete all meetings" << std::endl;
-        }
-        std::cout
-            << "--------------------------------------------------------------"
-            << std::endl;
-
-        std::cout << std::endl;
-
         std::string cmd = this->getOperation();
         cont = this->executeOperation(cmd);
     } while (cont);
@@ -83,7 +55,9 @@ std::string AgendaUI::getOperation() {
 
 bool AgendaUI::executeOperation(std::string t_operation) {
     if (this->m_userName != "") {  // logged in
-        if (t_operation == "o")
+        if (t_operation == "h")
+            this->printActions();
+        else if (t_operation == "o")
             this->userLogOut();
         else if (t_operation == "dc")
             this->deleteUser();
@@ -112,16 +86,54 @@ bool AgendaUI::executeOperation(std::string t_operation) {
         else if (t_operation == "da")
             this->deleteAllMeetings();
     } else {   // not logged in
-        if (t_operation == "l") {
+        if (t_operation == "h")
+            this->printActions();
+        else if (t_operation == "l")
             this->userLogIn();
-        } else if (t_operation == "r") {
+        else if (t_operation == "r")
             this->userRegister();
-        } else if (t_operation == "q") {
+        else if (t_operation == "q") {
             this->quitAgenda();
             return false;
         }
     }
     return true;
+}
+
+void AgendaUI::printActions(void) {
+    std::cout
+        << "----------------------- Agenda -------------------------------"
+        << std::endl;
+    std::cout << "Action :" << std::endl;
+    if (this->m_userName == "") {  // not logged in
+        std::cout << "h   - show this list" << std::endl;
+        std::cout
+            << "l   - log in Agenda by user name and password"
+            << std::endl;
+        std::cout << "r   - register an Agenda account" << std::endl;
+        std::cout << "q   - quit Agenda" << std::endl;
+    } else {  // logged in
+        std::cout << "h   - show this list" << std::endl;
+        std::cout << "o   - log out Agenda" << std::endl;
+        std::cout << "dc  - delete Agenda account" << std::endl;
+        std::cout << "lu  - list all Agenda user" << std::endl;
+        std::cout << "cm  - create a meeting" << std::endl;
+        std::cout << "amp - add meeting participator" << std::endl;
+        std::cout << "rmp - remove meeting participator" << std::endl;
+        std::cout << "rqm - request to quit meeting" << std::endl;
+        std::cout << "la  - list all meetings" << std::endl;
+        std::cout << "las - list all sponsor meetings" << std::endl;
+        std::cout << "lap - list all participate meetings" << std::endl;
+        std::cout << "qm  - query meeting by title" << std::endl;
+        std::cout << "qt  - query meeting by time interval" << std::endl;
+        std::cout << "dm  - delete meeting by title" << std::endl;
+        std::cout << "da  - delete all meetings" << std::endl;
+    }
+    std::cout
+        << "--------------------------------------------------------------"
+        << std::endl;
+
+    std::cout << std::endl;
 }
 
 void AgendaUI::userLogIn(void) {
@@ -132,13 +144,11 @@ void AgendaUI::userLogIn(void) {
         std::string u, p;
         std::cin >> u >> p;
 
-        if (this->m_agendaService.userLogIn(u, p) == true) {
-            this->m_userName = u;
-            this->m_userPassword = p;
-            std::cout << greenbold << "[log in] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[log in] Password error or user doesn\'t exist" << resetcon << std::endl;
-        }
+        this->m_agendaService.userLogIn(u, p);      // should throw on fail
+
+        this->m_userName = u;
+        this->m_userPassword = p;
+        std::cout << greenbold << "[log in] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[log in] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[log in] failed!" << resetcon << std::endl;
@@ -156,12 +166,8 @@ void AgendaUI::userRegister(void) {
         std::cout << "[register] ";
         std::string u, p, e, t;
         std::cin >> u >> p >> e >> t;
-        bool success = this->m_agendaService.userRegister(u, p, e, t);
-        if (success) {
-            std::cout << greenbold << "[register] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[register] This username has been registered!" << resetcon << std::endl;
-        }
+        this->m_agendaService.userRegister(u, p, e, t);     // should throw on fail
+        std::cout << greenbold << "[register] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[register] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[register] failed!" << resetcon << std::endl;
@@ -271,12 +277,8 @@ void AgendaUI::createMeeting(void) {
         std::cout << "[create meeting] ";
         std::cin >> t >> st >> et;
 
-        if (this->m_agendaService.createMeeting \
-                (this->m_userName, t, st, et, parts) == true) {
-            std::cout << greenbold << "[create meeting] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[create meeting] error!" << resetcon << std::endl;
-        }
+        this->m_agendaService.createMeeting (this->m_userName, t, st, et, parts);       // should throw on fail
+        std::cout << greenbold << "[create meeting] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[create meeting] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[create meeting] error!" << resetcon << std::endl;
@@ -291,11 +293,8 @@ void AgendaUI::addParticipator(void) {
         std::cout << "[add participator] ";
         std::string t, p;
         std::cin >> t >> p;
-        if (this->m_agendaService.addMeetingParticipator(this->m_userName, t, p)) {
-            std::cout << greenbold << "[add participator] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[add participator] error!" << resetcon << std::endl;
-        }
+        this->m_agendaService.addMeetingParticipator(this->m_userName, t, p);       // should throw on fail
+        std::cout << greenbold << "[add participator] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[add participator] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[add participator] error!" << resetcon << std::endl;
@@ -310,11 +309,8 @@ void AgendaUI::removeParticipator(void) {
         std::cout << "[remove participator] ";
         std::string t, p;
         std::cin >> t >> p;
-        if (this->m_agendaService.removeMeetingParticipator(this->m_userName, t, p)) {
-            std::cout << greenbold << "[remove participator] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[remove participator] error!" << resetcon << std::endl;
-        }
+        this->m_agendaService.removeMeetingParticipator(this->m_userName, t, p);     // should throw on fail
+        std::cout << greenbold << "[remove participator] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[remove participator] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[remove participator] error!" << resetcon << std::endl;
@@ -329,11 +325,8 @@ void AgendaUI::quitMeeting(void) {
         std::cout << "[quit meeting] ";
         std::string t;
         std::cin >> t;
-        if (this->m_agendaService.quitMeeting(this->m_userName, t)) {
-            std::cout << greenbold << "[quit meeting] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[quit meeting] error!" << resetcon << std::endl;
-        }
+        this->m_agendaService.quitMeeting(this->m_userName, t);                     // should throw on fail
+        std::cout << greenbold << "[quit meeting] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[quit meeting] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[quit meeting] error!" << resetcon << std::endl;
@@ -346,8 +339,7 @@ void AgendaUI::listAllMeetings(void) {
     try {
         std::cout << "[list all meetings]" << std::endl;
         std::cout << std::endl;
-        this->printMeetings \
-            (this->m_agendaService.listAllMeetings(this->m_userName));
+        this->printMeetings(this->m_agendaService.listAllMeetings(this->m_userName));
     } catch (exception &e) {
         std::cout << redbold << "[list all meetings] " << e.what() << resetcon << std::endl;
         this->printMeetings(std::list<Meeting>());
@@ -360,8 +352,7 @@ void AgendaUI::listAllSponsorMeetings(void) {
     try {
         std::cout << "[list all sponsor meetings]" << std::endl;
         std::cout << std::endl;
-        this->printMeetings \
-            (this->m_agendaService.listAllSponsorMeetings(this->m_userName));
+        this->printMeetings(this->m_agendaService.listAllSponsorMeetings(this->m_userName));
     } catch (exception &e) {
         std::cout << redbold << "[list all sponsor meetings] " << e.what() << resetcon << std::endl;
         this->printMeetings(std::list<Meeting>());
@@ -374,8 +365,7 @@ void AgendaUI::listAllParticipateMeetings(void) {
     try {
         std::cout << "[list all participator meetings]" << std::endl;
         std::cout << std::endl;
-        this->printMeetings \
-            (this->m_agendaService.listAllParticipateMeetings(this->m_userName));
+        this->printMeetings(this->m_agendaService.listAllParticipateMeetings(this->m_userName));
     } catch (exception &e) {
         std::cout << redbold << "[list all participator meetings] " << e.what() << resetcon << std::endl;
         this->printMeetings(std::list<Meeting>());
@@ -390,8 +380,8 @@ void AgendaUI::queryMeetingByTitle(void) {
         std::cout << "[query meeting] ";
         std::string t;
         std::cin >> t;
-        this->printMeetings \
-            (this->m_agendaService.meetingQuery(this->m_userName, t));
+        std::cout << std::endl;
+        this->printMeetings(this->m_agendaService.meetingQuery(this->m_userName, t));
     } catch (exception &e) {
         std::cout << redbold << "[query meeting] " << e.what() << resetcon << std::endl;
         this->printMeetings(std::list<Meeting>());
@@ -409,8 +399,8 @@ void AgendaUI::queryMeetingByTimeInterval(void) {
         std::cout << "[query meetings] ";
         std::string st, et;
         std::cin >> st >> et;
-        this->printMeetings \
-            (this->m_agendaService.meetingQuery(this->m_userName, st, et));
+        std::cout << std::endl;
+        this->printMeetings(this->m_agendaService.meetingQuery(this->m_userName, st, et));
     } catch (exception &e) {
         std::cout << redbold << "[query meetings] " << e.what() << resetcon << std::endl;
         this->printMeetings(std::list<Meeting>());
@@ -425,11 +415,8 @@ void AgendaUI::deleteMeetingByTitle(void) {
         std::cout << "[delete meeting] ";
         std::string t;
         std::cin >> t;
-        if (this->m_agendaService.deleteMeeting(this->m_userName, t) == true) {
-            std::cout << greenbold << "[delete meeting by title] succeed!" << resetcon << std::endl;
-        } else {
-            std::cout << redbold << "[error] delete meeting fail!" << resetcon << std::endl;
-        }
+        this->m_agendaService.deleteMeeting(this->m_userName, t);           // should throw on fail
+        std::cout << greenbold << "[delete meeting by title] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[delete meeting by title] " << e.what() << resetcon << std::endl;
         std::cout << redbold << "[error] delete meeting fail!" << resetcon << std::endl;
@@ -440,7 +427,7 @@ void AgendaUI::deleteMeetingByTitle(void) {
 
 void AgendaUI::deleteAllMeetings(void) {
     try {
-        this->m_agendaService.deleteAllMeetings(this->m_userName);
+        this->m_agendaService.deleteAllMeetings(this->m_userName);          // should throw on fail
         std::cout << greenbold << "[delete all meetings] succeed!" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[delete all meetings] " << e.what() << resetcon << std::endl;
