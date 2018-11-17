@@ -8,6 +8,7 @@
 class AgendaUI {
 public:
     AgendaUI();
+    ~AgendaUI();
     void OperationLoop(void);
 
 private:
@@ -122,7 +123,11 @@ private:
      * show the meetings in the screen
      */
     void printMeetings(std::list<Meeting> t_meetings);
-    // dates
+
+    /**
+     * interrupt event handler
+     */
+    // data
     std::string m_userName;
     std::string m_userPassword;
     AgendaService m_agendaService;

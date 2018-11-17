@@ -1,6 +1,7 @@
 #include "AgendaUI.hpp"
 #include "AgendaException.hpp"
 #include <exception>
+#include <algorithm>
 
 using std::exception;
 
@@ -27,6 +28,10 @@ AgendaUI::AgendaUI() {
     std::cout << "Copyright 2018 Sun Yat-sen University, all rights reserved." << std::endl;
     std::cout << "For a list of available commands, please type \"h\"" << std::endl;
     std::cout << std::endl;
+}
+
+AgendaUI::~AgendaUI() {
+    this->m_agendaService.quitAgenda();
 }
 
 void AgendaUI::OperationLoop(void) {
