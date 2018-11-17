@@ -48,6 +48,9 @@ $(BUILD_PTH)User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
 	@mkdir -p $(BUILD_PTH); 
 	$(CC) -c -o $@ $<
 
+run :
+	@$(BIN_PTH)$(EXEC)
+
 lint : 
 	cpplint --filter=-legal/copyright,-build/header_guard,-build/include,-readability/streams src/*.hpp src/*.cpp
 

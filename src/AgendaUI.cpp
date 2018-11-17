@@ -35,6 +35,9 @@ void AgendaUI::OperationLoop(void) {
             std::cout << "dc  - delete Agenda account" << std::endl;
             std::cout << "lu  - list all Agenda user" << std::endl;
             std::cout << "cm  - create a meeting" << std::endl;
+            std::cout << "amp - add meeting participator" << std::endl;
+            std::cout << "rmp - remove meeting participator" << std::endl;
+            std::cout << "rqm - request to quit meeting" << std::endl;
             std::cout << "la  - list all meetings" << std::endl;
             std::cout << "las - list all sponsor meetings" << std::endl;
             std::cout << "lap - list all participate meetings" << std::endl;
@@ -61,8 +64,8 @@ void AgendaUI::startAgenda(void) {
 std::string AgendaUI::getOperation() {
     std::cout
         << (this->m_userName == "" ? "Agenda" : "Agenda@" + this->m_userName)
-        << " : "
-        << (this->m_userName == "" ? "~$ " : "# ");
+        << " :~"
+        << (this->m_userName == "" ? "$ " : "# ");
 
     std::string op;
     std::cin >> op;
@@ -80,6 +83,12 @@ bool AgendaUI::executeOperation(std::string t_operation) {
             this->listAllUsers();
         else if (t_operation == "cm")
             this->createMeeting();
+        else if (t_operation == "amp")
+            this->addParticipator();
+        else if (t_operation == "rmp")
+            this->removeParticipator();
+        else if (t_operation == "rqm")
+            this->quitMeeting();
         else if (t_operation == "la")
             this->listAllMeetings();
         else if (t_operation == "las")
@@ -118,7 +127,7 @@ void AgendaUI::userLogIn(void) {
         this->m_userPassword = p;
         std::cout << "[log in] succeed!" << std::endl;
     } else {
-        std::cout << "[error] log in fail!" << std::endl;
+        std::cout << "[log in] Password error or user doesn\'t exist" << std::endl;
     }
     std::cout << std::endl;
 }
@@ -135,7 +144,7 @@ void AgendaUI::userRegister(void) {
     if (this->m_agendaService.userRegister(u, p, e, t)) {
         std::cout << "[register] succeed!" << std::endl;
     } else {
-        std::cout << "[error] register fail!" << std::endl;
+        std::cout << "[register] This username has been registered!" << std::endl;
     }
     std::cout << std::endl;
 }
@@ -225,6 +234,45 @@ void AgendaUI::createMeeting(void) {
     std::cout << std::endl;
 }
 
+void AgendaUI::addParticipator(void) {
+    std::cout << "[add participator] [meeting title] [participator username]" << std::endl;  // NOLINT
+    std::cout << "[add participator] ";
+    std::string t, p;
+    std::cin >> t >> p;
+    if (this->m_agendaService.addMeetingParticipator(this->m_userName, t, p)) {
+        std::cout << "[add participator] succeed!" << std::endl;
+    } else {
+        std::cout << "[add participator] error!" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void AgendaUI::removeParticipator(void) {
+    std::cout << "[remove participator] [meeting title] [participator username]" << std::endl;  // NOLINT
+    std::cout << "[remove participator] ";
+    std::string t, p;
+    std::cin >> t >> p;
+    if (this->m_agendaService.removeMeetingParticipator(this->m_userName, t, p)) {
+        std::cout << "[remove participator] succeed!" << std::endl;
+    } else {
+        std::cout << "[remove participator] error!" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void AgendaUI::quitMeeting(void) {
+    std::cout << "[quit meeting] [meeting title]" << std::endl;
+    std::cout << "[quit meeting] ";
+    std::string t;
+    std::cin >> t;
+    if (this->m_agendaService.quitMeeting(this->m_userName, t)) {
+        std::cout << "[quit meeting] succeed!" << std::endl;
+    } else {
+        std::cout << "[quit meeting] error!" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void AgendaUI::listAllMeetings(void) {
     std::cout << "[list all meetings]" << std::endl;
     std::cout << std::endl;
@@ -251,7 +299,7 @@ void AgendaUI::listAllParticipateMeetings(void) {
 
 void AgendaUI::queryMeetingByTitle(void) {
     std::cout << "[query meeting] [title]" << std::endl;
-    std::cout << "[query meeting] " << std::endl;
+    std::cout << "[query meeting] ";
     std::string t;
     std::cin >> t;
     this->printMeetings \

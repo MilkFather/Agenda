@@ -142,7 +142,7 @@ bool Storage::writeToFile(void) {
             auto it2 = it;
             it2++;
             if (it2 != this->m_meetingList.end()) {
-                usr << std::endl;
+                meeting << std::endl;
             }
         }
         meeting.close();

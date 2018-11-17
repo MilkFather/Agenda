@@ -427,6 +427,67 @@ TEST_F(AgendaServiceTest, CreateMeetingDateIssues) {
     }
 }
 
+TEST_F(AgendaServiceTest, AddandRemoveParticipator) {
+    ASSERT_TRUE(service->userRegister("Trevor", "GrandTheftAutoV",
+                                      "Trevor@email.com", "13500000000"));
+    
+    // 0        |-----|
+    // 1   |-----|
+    // 2              |----|
+    
+    ASSERT_TRUE(service->createMeeting("Naked Snake",
+                                       "I wanna Quite 0",
+                                       "2016-07-08/11:10",
+                                       "2016-07-08/12:05",
+                                       vector<string>({"Lara Croft"})));
+                
+    ASSERT_TRUE(service->createMeeting("Trevor",
+                                       "I wanna Quite 1",
+                                       "2016-07-08/10:10",
+                                       "2016-07-08/11:20",
+                                       vector<string>({"Geralt of Rivia"})));
+                
+    ASSERT_TRUE(service->createMeeting("Naked Snake",
+                                       "I wanna Quite 2",
+                                       "2016-07-08/12:05",
+                                       "2016-07-08/13:05",
+                                       vector<string>({"Lara Croft"})));
+    
+    EXPECT_FALSE(service->addMeetingParticipator("Alice", "I wanna Quite 2", "Trevor"));  // sponsor not exist in user list
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 2", "Alice"));  // participator not exist in user list
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 2", "Naked Snake"));  // sponsor is participator
+    EXPECT_FALSE(service->addMeetingParticipator("Trevor", "I wanna Quite 2", "Geralt of Rivia"));  // title not exist for this user
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 0", "Lara Croft"));  // duplicate participator
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 0", "Trevor"));  // participator sponsors another meeting
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 0", "Geralt of Rivia"));  // participator participates another meeting
+    EXPECT_TRUE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 2", "Trevor"));
+    EXPECT_TRUE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 2", "Geralt of Rivia"));
+    
+    EXPECT_FALSE(service->removeMeetingParticipator("Alice", "I wanna Quite 2", "Trevor"));  // sponsor not exist
+    EXPECT_FALSE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 2", "Alice"));  // participator not exist
+    EXPECT_FALSE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 0", "Naked Snake"));  // I delete myself
+    EXPECT_FALSE(service->removeMeetingParticipator("Trevor", "I wanna Quite 2", "Lara Croft"));  // title not exist for this user
+    EXPECT_FALSE(service->removeMeetingParticipator("Trevor", "I wanna Quite 1", "Naked Snake"));  // participator not in the meeting
+    EXPECT_TRUE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 2", "Trevor"));
+    EXPECT_TRUE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 2", "Geralt of Rivia"));
+    EXPECT_TRUE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 2", "Lara Croft"));
+    EXPECT_FALSE(service->addMeetingParticipator("Naked Snake", "I wanna Quite 2", "Geralt of Rivia"));
+    
+    ASSERT_TRUE(service->createMeeting("Naked Snake",
+                                       "I wanna Quite 2",
+                                       "2016-07-08/12:05",
+                                       "2016-07-08/13:05",
+                                       vector<string>({"Trevor"})));
+    // tear down
+    EXPECT_TRUE(service->removeMeetingParticipator("Naked Snake", "I wanna Quite 0", "Lara Croft"));
+    EXPECT_TRUE(service->deleteUser("Trevor", "GrandTheftAutoV"));
+    
+    // final check
+    EXPECT_TRUE(service->listAllMeetings("Naked Snake").empty());
+    EXPECT_TRUE(service->listAllMeetings("Lara Croft").empty());
+    EXPECT_TRUE(service->listAllMeetings("Geralt of Rivia").empty());
+}
+
 /*
  *  Test meetingQuery() method
  */
@@ -558,3 +619,4 @@ TEST_F(AgendaServiceTest, ListMeeting) {
     EXPECT_TRUE(service->listAllSponsorMeetings(user2.getName()).empty());
     EXPECT_TRUE(service->listAllParticipateMeetings(user2.getName()).empty());
 }
+

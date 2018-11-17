@@ -64,6 +64,21 @@ class AgendaUI {
     void createMeeting(void);
 
     /**
+     * user add a participator
+     */
+    void addParticipator(void);
+
+    /**
+     * user remove a participator
+     */
+    void removeParticipator(void);
+
+    /**
+     * user quit from a meeting
+     */
+    void quitMeeting(void);
+
+    /**
      * list all meetings from storage
      */
     void listAllMeetings(void);
