@@ -1,6 +1,6 @@
 **/.DS_Store
 *.o
-bin/*
+
 data/*
 src_ref/
 build/*
