@@ -24,7 +24,7 @@ std::string fillblank(int total, int used) {
 }
 
 AgendaUI::AgendaUI() {
-    std::cout << "Agenda 1.0" << std::endl;
+    std::cout << std::endl << "Agenda 1.0" << std::endl << std::endl;
     std::cout << "Copyright 2018 Sun Yat-sen University, all rights reserved." << std::endl;
     std::cout << "For a list of available commands, please type \"h\"" << std::endl;
     std::cout << std::endl;
@@ -153,10 +153,10 @@ void AgendaUI::userLogIn(void) {
 
         this->m_userName = u;
         this->m_userPassword = p;
-        std::cout << greenbold << "[log in] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[log in] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[log in] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[log in] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[log in] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -172,10 +172,10 @@ void AgendaUI::userRegister(void) {
         std::string u, p, e, t;
         std::cin >> u >> p >> e >> t;
         this->m_agendaService.userRegister(u, p, e, t);     // should throw on fail
-        std::cout << greenbold << "[register] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[register] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[register] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[register] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[register] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -187,7 +187,7 @@ void AgendaUI::userLogOut(void) {
         this->m_userPassword = "";
     } catch (exception &e) {
         std::cout << redbold << "[user logout] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[user logout] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[user logout] fail" << resetcon << std::endl;
     }
 
     std::cout << std::endl;
@@ -198,7 +198,7 @@ void AgendaUI::quitAgenda(void) {
         this->m_agendaService.quitAgenda();
     } catch (exception &e) {
         std::cout << redbold << "[quit agenda] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[quit agenda] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[quit agenda] fail" << resetcon << std::endl;
     }
 
     std::cout << std::endl;
@@ -209,10 +209,10 @@ void AgendaUI::deleteUser(void) {
         this->m_agendaService.deleteUser(this->m_userName, this->m_userPassword);
         this->m_userName = "";
         this->m_userPassword = "";
-        std::cout << greenbold << "[delete agenda account] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[delete agenda account] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[delete agenda account] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[delete agenda account] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[delete agenda account] fail" << resetcon << std::endl;
     }
 
     std::cout << std::endl;
@@ -252,7 +252,7 @@ void AgendaUI::listAllUsers(void) {
         }
     } catch (exception &e) {
         std::cout << redbold << "[list all users] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[list all users] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[list all users] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -283,10 +283,10 @@ void AgendaUI::createMeeting(void) {
         std::cin >> t >> st >> et;
 
         this->m_agendaService.createMeeting (this->m_userName, t, st, et, parts);       // should throw on fail
-        std::cout << greenbold << "[create meeting] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[create meeting] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[create meeting] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[create meeting] error!" << resetcon << std::endl;
+        std::cout << redbold << "[create meeting] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -299,10 +299,10 @@ void AgendaUI::addParticipator(void) {
         std::string t, p;
         std::cin >> t >> p;
         this->m_agendaService.addMeetingParticipator(this->m_userName, t, p);       // should throw on fail
-        std::cout << greenbold << "[add participator] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[add participator] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[add participator] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[add participator] error!" << resetcon << std::endl;
+        std::cout << redbold << "[add participator] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -315,10 +315,10 @@ void AgendaUI::removeParticipator(void) {
         std::string t, p;
         std::cin >> t >> p;
         this->m_agendaService.removeMeetingParticipator(this->m_userName, t, p);     // should throw on fail
-        std::cout << greenbold << "[remove participator] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[remove participator] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[remove participator] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[remove participator] error!" << resetcon << std::endl;
+        std::cout << redbold << "[remove participator] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -331,10 +331,10 @@ void AgendaUI::quitMeeting(void) {
         std::string t;
         std::cin >> t;
         this->m_agendaService.quitMeeting(this->m_userName, t);                     // should throw on fail
-        std::cout << greenbold << "[quit meeting] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[quit meeting] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[quit meeting] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[quit meeting] error!" << resetcon << std::endl;
+        std::cout << redbold << "[quit meeting] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -421,10 +421,10 @@ void AgendaUI::deleteMeetingByTitle(void) {
         std::string t;
         std::cin >> t;
         this->m_agendaService.deleteMeeting(this->m_userName, t);           // should throw on fail
-        std::cout << greenbold << "[delete meeting by title] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[delete meeting by title] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[delete meeting by title] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[error] delete meeting fail!" << resetcon << std::endl;
+        std::cout << redbold << "[delete meeting by title] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
@@ -433,10 +433,10 @@ void AgendaUI::deleteMeetingByTitle(void) {
 void AgendaUI::deleteAllMeetings(void) {
     try {
         this->m_agendaService.deleteAllMeetings(this->m_userName);          // should throw on fail
-        std::cout << greenbold << "[delete all meetings] succeed!" << resetcon << std::endl;
+        std::cout << greenbold << "[delete all meetings] success" << resetcon << std::endl;
     } catch (exception &e) {
         std::cout << redbold << "[delete all meetings] " << e.what() << resetcon << std::endl;
-        std::cout << redbold << "[delete all meetings] failed!" << resetcon << std::endl;
+        std::cout << redbold << "[delete all meetings] fail" << resetcon << std::endl;
     }
     
     std::cout << std::endl;
