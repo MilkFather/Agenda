@@ -6,7 +6,7 @@ AgendaUI *ui = nullptr;
 
 void sig_handler(int sig) {
     if (sig == SIGINT) {
-        std::cout << std::endl << "\033[1;31m" << "[Agenda] User inturrupt, saving" << "\033[0m" <<  std::endl;
+        std::cout << std::endl << "\033[1;31m" << "[Agenda] User interrupt, saving" << "\033[0m" <<  std::endl;
         if (ui != nullptr) {
             delete ui;
         }
