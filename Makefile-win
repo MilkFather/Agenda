@@ -8,7 +8,7 @@ SRC_PTH := ./src/
 
 EXEC := agenda.exe
 
-CC := i686-w64-mingw32-g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
+CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
 
 build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
 	@mkdir -p $(BIN_PTH)
