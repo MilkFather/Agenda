@@ -27,27 +27,27 @@ $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUILD_PTH)AgendaService.o
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(HEADER_PTH)AgendaException.hpp $(BUILD_PTH)Storage.o
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Date.o : $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
-	@mkdir -p $(BUILD_PTH); 
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 run :

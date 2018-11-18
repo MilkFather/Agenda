@@ -4,6 +4,11 @@
 
 #ifdef _WIN32
 #include <windows.h>
+
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
 #endif
 
 AgendaUI *ui = nullptr;
@@ -22,7 +27,7 @@ int main(int argc, char *argv[]) {
     /* insert your code here */
     signal(SIGINT, sig_handler);
 #ifdef _WIN32
-    // enable ANSI escape sequence on Eindows
+    // enable ANSI escape sequence on Windows
     // require Windows 10 or newer
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE) {
