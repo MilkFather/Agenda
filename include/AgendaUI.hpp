@@ -4,6 +4,14 @@
 #include "AgendaService.hpp"
 #include <iostream>
 #include <string>
+#include <vector>
+
+#define resetcon "\033[0m"
+#define bold "\033[1m"
+#define redbold "\033[1;31m"
+#define greenbold "\033[1;32m"
+#define yellowbold "\033[1;33m"
+#define bluebold "\033[1;34m"
 
 class AgendaUI {
 public:
@@ -122,15 +130,48 @@ private:
     /**
      * show the meetings in the screen
      */
-    void printMeetings(std::list<Meeting> t_meetings);
+    void printMeetings(const std::list<Meeting> t_meetings) const;
 
     /**
-     * interrupt event handler
+     * user confirmation
      */
+    bool printConfirmation(const std::string &text) const;
+
+    /**
+     * show the header
+     */
+    void printActionHeader(const std::string style = bold) const;
+
+    /**
+     * show action parameters
+     */
+    void printParameter(const int n, ...) const;
+
+    /**
+     * get input parameters
+     */
+    void getParameter(const int n, std::vector<char> type, ...) const;
+
+    /**
+     * show error
+     */
+    void printError(const std::string &msg) const;
+
+    /**
+     * show success
+     */
+    void printSuccess() const;
+
+    /**
+     * show cancel
+     */
+    void printCancel() const;
+
     // data
     std::string m_userName;
     std::string m_userPassword;
     AgendaService m_agendaService;
+    std::string m_currentAction;
 };
 
 #endif

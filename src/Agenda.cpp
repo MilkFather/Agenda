@@ -19,7 +19,7 @@ void sig_handler(int sig) {
         if (ui != nullptr) {
             delete ui;
         }
-        exit(sig);
+        exit(0);
     }
 }
 

@@ -64,19 +64,21 @@ void AgendaService::userRegister(const std::string &userName, const std::string 
     m_storage->createUser(User(userName, password, email, phone));
 }
 
-void AgendaService::deleteUser(const std::string &userName, const std::string &password) {
+void AgendaService::deleteUser(const std::string &userName, const std::string &password, const bool &action) {
     userLogIn(userName, password);                      // the correct user & password
     
-    deleteAllMeetings(userName);
-    for (auto meeting: listAllParticipateMeetings(userName))
-        quitMeeting(userName, meeting.getTitle());
+    if (action) {   // allow mock delete
+        deleteAllMeetings(userName);
+        for (auto meeting: listAllParticipateMeetings(userName))
+            quitMeeting(userName, meeting.getTitle());
     
-    m_storage->deleteUser([userName](const User &x) -> bool {
-        return x.getName() == userName;
-    });
-    m_storage->deleteMeeting([](const Meeting &x) -> bool {
-        return x.getParticipator().empty();
-    });
+        m_storage->deleteUser([userName](const User &x) -> bool {
+            return x.getName() == userName;
+        });
+        m_storage->deleteMeeting([](const Meeting &x) -> bool {
+            return x.getParticipator().empty();
+        });
+    }
 }
 
 std::list<User> AgendaService::listAllUsers(void) const {
@@ -159,7 +161,7 @@ void AgendaService::addMeetingParticipator(const std::string &userName, const st
     }
 }
 
-void AgendaService::removeMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
+void AgendaService::removeMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator, const bool &action) {
     checkUserExistence(userName);
     checkUserExistence(participator);
     
@@ -173,23 +175,25 @@ void AgendaService::removeMeetingParticipator(const std::string &userName, const
         throw NotAMemberOfMeetingException(title, participator);    // not in the meeting
     }
     
-    // all done
-    int updated = m_storage->updateMeeting([userName, title](const Meeting &x) -> bool {
-        return x.getSponsor() == userName && x.getTitle() == title;
-    }, [participator](Meeting &x) -> void {
-        x.removeParticipator(participator);
-    });
+    if (action) {   // allow mock remove
+        // all done
+        int updated = m_storage->updateMeeting([userName, title](const Meeting &x) -> bool {
+            return x.getSponsor() == userName && x.getTitle() == title;
+        }, [participator](Meeting &x) -> void {
+            x.removeParticipator(participator);
+        });
     
-    m_storage->deleteMeeting([](const Meeting &x) -> bool {
-        return x.getParticipator().empty();
-    });
+        m_storage->deleteMeeting([](const Meeting &x) -> bool {
+            return x.getParticipator().empty();
+        });
 
-    if (updated <= 0) {
-        throw UnknownException();
-    }
+        if (updated <= 0) {
+            throw UnknownException();
+        }
+    } 
 }
 
-void AgendaService::quitMeeting(const std::string &userName, const std::string &title) {
+void AgendaService::quitMeeting(const std::string &userName, const std::string &title, const bool &action) {
     checkUserExistence(userName);
 
     auto ls = m_storage->queryMeeting([title](const Meeting &x) -> bool {
@@ -206,18 +210,20 @@ void AgendaService::quitMeeting(const std::string &userName, const std::string &
         throw NotAMemberOfMeetingException(title, userName);    // Am I in it?
     }
     
-    int updated = m_storage->updateMeeting([userName, title](const Meeting &x) -> bool {
-        return (x.getSponsor() != userName && x.isParticipator(userName) && x.getTitle() == title);
-    }, [userName](Meeting &x) -> void {
-        x.removeParticipator(userName);
-    });
+    if (action) {   // allow mock quit
+        int updated = m_storage->updateMeeting([userName, title](const Meeting &x) -> bool {
+            return (x.getSponsor() != userName && x.isParticipator(userName) && x.getTitle() == title);
+        }, [userName](Meeting &x) -> void {
+            x.removeParticipator(userName);
+        });
     
-    m_storage->deleteMeeting([](const Meeting &x) -> bool {
-        return x.getParticipator().empty();
-    });
+        m_storage->deleteMeeting([](const Meeting &x) -> bool {
+            return x.getParticipator().empty();
+        });
 
-    if (updated <= 0) {
-        throw UnknownException();
+        if (updated <= 0) {
+            throw UnknownException();
+        }
     }
 }
 
@@ -268,24 +274,28 @@ std::list<Meeting> AgendaService::listAllParticipateMeetings(const std::string &
     });
 }
 
-void AgendaService::deleteMeeting(const std::string &userName, const std::string &title) {
+void AgendaService::deleteMeeting(const std::string &userName, const std::string &title, const bool &action) {
     checkUserExistence(userName);
     getMeetingBySponsorAndTitle(userName, title);
     
-    int deleted = m_storage->deleteMeeting([userName, title](const Meeting &x) -> bool {
-        return (x.getSponsor() == userName) && (x.getTitle() == title);
-    });
-    if (deleted <= 0) {
-        throw UnknownException();
+    if (action) {   // allow mock delete
+        int deleted = m_storage->deleteMeeting([userName, title](const Meeting &x) -> bool {
+            return (x.getSponsor() == userName) && (x.getTitle() == title);
+        });
+        if (deleted <= 0) {
+            throw UnknownException();
+        }
     }
 }
 
-void AgendaService::deleteAllMeetings(const std::string &userName) {
+void AgendaService::deleteAllMeetings(const std::string &userName, const bool &action) {
     checkUserExistence(userName);
     
-    m_storage->deleteMeeting([userName](const Meeting &x) -> bool {
-        return x.getSponsor() == userName;
-    });
+    if (action) {
+        m_storage->deleteMeeting([userName](const Meeting &x) -> bool {
+            return x.getSponsor() == userName;
+        });
+    }
 }
 
 void AgendaService::startAgenda(void) {

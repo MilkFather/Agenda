@@ -13,11 +13,11 @@ EXEC := agenda.exe
 
 CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
 
-build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+build : $(BUILD_PTH)Agenda.o
 	@if not exist "$(BIN_PTH_WIN)" mkdir $(BIN_PTH_WIN)
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
 
-	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o
 
 $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
@@ -31,8 +31,12 @@ $(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaSer
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
 	$(CC) -c -o $@ $<
 
-$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o
+$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o $(BUILD_PTH)Date.o $(BUILD_PTH)CSV.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
+	$(CC) -c -o $@ $<
+
+$(BUILD_PTH)CSV.o : $(SRC_PTH)CSV.cpp $(HEADER_PTH)CSV.hpp
+	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o

@@ -42,7 +42,7 @@ public:
      * @param password user's password
      * @return if success, true will be returned
      */
-    void deleteUser(const std::string &userName, const std::string &password);
+    void deleteUser(const std::string &userName, const std::string &password, const bool &action = true);
 
     /**
      * list all users from storage
@@ -83,7 +83,8 @@ public:
      */
     void removeMeetingParticipator(const std::string &userName,
                                    const std::string &title,
-                                   const std::string &participator);
+                                   const std::string &participator,
+                                   const bool &action = true);
 
     /**
      * quit from a meeting
@@ -91,7 +92,7 @@ public:
      * @param title the meeting's title
      * @return if success, true will be returned
      */
-    void quitMeeting(const std::string &userName, const std::string &title);
+    void quitMeeting(const std::string &userName, const std::string &title, const bool &action = true);
 
     /**
      * search a meeting by username and title
@@ -140,14 +141,14 @@ public:
      * @param title meeting's title
      * @return if success, true will be returned
      */
-    void deleteMeeting(const std::string &userName, const std::string &title);
+    void deleteMeeting(const std::string &userName, const std::string &title, const bool &action = true);
 
     /**
      * delete all meetings by sponsor
      * @param userName sponsor's username
      * @return if success, true will be returned
      */
-    void deleteAllMeetings(const std::string &userName);
+    void deleteAllMeetings(const std::string &userName, const bool &action = true);
 
     /**
      * start Agenda service and connect to storage

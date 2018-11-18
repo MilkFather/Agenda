@@ -16,11 +16,11 @@ EXEC := agenda
 CC := g++ -O3 -std=c++11 -I$(HEADER_PTH)
 CCT := g++ -g -std=c++11 -I$(HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread
 
-build : $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+build : $(BUILD_PTH)Agenda.o
 	@mkdir -p $(BIN_PTH)
 	@mkdir -p $(BUILD_PTH)
 
-	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o
+	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o
 
 $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@mkdir -p $(BUILD_PTH); 
@@ -34,7 +34,11 @@ $(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaSer
 	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
-$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o
+$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o $(BUILD_PTH)Date.o $(BUILD_PTH)CSV.o
+	@mkdir -p $(BUILD_PTH)
+	$(CC) -c -o $@ $<
+
+$(BUILD_PTH)CSV.o : $(SRC_PTH)CSV.cpp $(HEADER_PTH)CSV.hpp
 	@mkdir -p $(BUILD_PTH)
 	$(CC) -c -o $@ $<
 
