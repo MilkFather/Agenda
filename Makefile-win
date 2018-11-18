@@ -36,7 +36,7 @@ $(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_P
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)CSV.o : $(SRC_PTH)CSV.cpp $(HEADER_PTH)CSV.hpp
-	@mkdir -p $(BUILD_PTH)
+	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
 	$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o
