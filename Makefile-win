@@ -16,40 +16,48 @@ CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
 build : $(BUILD_PTH)Agenda.o
 	@if not exist "$(BIN_PTH_WIN)" mkdir $(BIN_PTH_WIN)
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-
-	$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o
+	@echo Linking executable
+	@$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o
 
 $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUILD_PTH)AgendaService.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(HEADER_PTH)AgendaException.hpp $(BUILD_PTH)Storage.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o $(BUILD_PTH)Date.o $(BUILD_PTH)CSV.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)CSV.o : $(SRC_PTH)CSV.cpp $(HEADER_PTH)CSV.hpp
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)Date.o : $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 $(BUILD_PTH)User.o : $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp
 	@if not exist "$(BUILD_PTH_WIN)" mkdir $(BUILD_PTH_WIN)
-	$(CC) -c -o $@ $<
+	@echo Building $@
+	@$(CC) -c -o $@ $<
 
 run :
 	@$(BIN_PTH)$(EXEC)

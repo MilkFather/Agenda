@@ -150,7 +150,7 @@ private:
     /**
      * get input parameters
      */
-    void getParameter(const int n, std::vector<char> type, ...) const;
+    void getParameter(const int n, ...) const;
 
     /**
      * show error
