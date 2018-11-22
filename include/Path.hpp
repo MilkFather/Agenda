@@ -14,6 +14,8 @@ class Path {
   static const char *meetingPath;
 
   static const char *logDirPath;
+
+  static const char *logDirPathWin;
 };
 
 #endif

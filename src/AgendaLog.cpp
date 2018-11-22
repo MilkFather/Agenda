@@ -10,10 +10,11 @@ using std::stringstream;
 shared_ptr<AgendaLogMan> AgendaLogMan::m_instance(nullptr);
 
 AgendaLogMan::AgendaLogMan() {
-    string f = string(Path::logDirPath) + string("Agenda.log");
 #ifdef _WIN32
-    string cmd = string("if not exist \"") + string(Path::logDirPath) + string("\" mkdir \"") + string(Path::logDirPath) + string("\"");
+    string f = string(Path::logDirPathWin) + string("Agenda.log");
+    string cmd = string("if not exist \"") + string(Path::logDirPathWin) + string("\" mkdir \"") + string(Path::logDirPathWin) + string("\"");
 #else
+    string f = string(Path::logDirPath) + string("Agenda.log");
     string cmd = string("mkdir -p \"") + string(Path::logDirPath) + string("\"");
 #endif
     system(cmd.c_str());
@@ -66,11 +67,12 @@ void AgendaLogMan::Log(const string l) {
                << "-" << timeinfo->tm_min
                << "-" << timeinfo->tm_sec
                << ".log";
-            string f = string(Path::logDirPath) + string("Agenda.log");
             handle.close();
 #ifdef _WIN32
-            string cmd = string("ren \"") + f + string("\" \"") + string(Path::logDirPath) + ss.str() + string("\"");
+            string f = string(Path::logDirPathWin) + string("Agenda.log");
+            string cmd = string("ren \"") + f + string("\" \"") + ss.str() + string("\"");
 #else
+            string f = string(Path::logDirPath) + string("Agenda.log");
             string cmd = string("mv \"") + f + string("\" \"") + string(Path::logDirPath) + ss.str() + string("\"");
 #endif
             system(cmd.c_str());
