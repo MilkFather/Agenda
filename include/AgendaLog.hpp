@@ -4,26 +4,27 @@
 #include "Path.hpp"
 #include <string>
 #include <memory>
+#include <fstream>
 
 using std::string;
 using std::shared_ptr;
+using std::fstream;
 
 class AgendaLogMan {
 private:
     AgendaLogMan();
-    ~AgendaLogMan();
 
     AgendaLogMan(const AgendaLogMan &) = delete;
     AgendaLogMan& operator=(const AgendaLogMan &) = delete;
 
-    void Openfile();
-
 public:
+    ~AgendaLogMan();
     static shared_ptr<AgendaLogMan> getInstance();
     void Log(string l);
 
 private:
     static shared_ptr<AgendaLogMan> m_instance;
+    fstream handle;
 };
 
 #endif

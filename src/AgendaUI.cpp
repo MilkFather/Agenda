@@ -3,7 +3,9 @@
 #include <exception>
 #include <algorithm>
 #include <cstdarg>
+#include <cctype>
 #include <vector>
+#include "AgendaLog.hpp"
 
 using std::exception;
 
@@ -66,6 +68,7 @@ void AgendaUI::printError(const std::string &msg) const {
     std::cout << redbold << " Error: " << msg << resetcon << std::endl;
     printActionHeader(redbold);
     std::cout << redbold << " Failed" << resetcon << std::endl << std::endl;
+    AgendaLogMan::getInstance()->Log("Error");
 }
 
 void AgendaUI::printSuccess() const {
