@@ -20,9 +20,11 @@ private:
 public:
     ~AgendaLogMan();
     static shared_ptr<AgendaLogMan> getInstance();
-    void Log(string l);
+    void Log(const string l);
 
 private:
+    int getFileSize(const string file) const;
+    int size;
     static shared_ptr<AgendaLogMan> m_instance;
     fstream handle;
 };

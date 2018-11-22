@@ -20,24 +20,34 @@ build : $(BUILD_PTH)Agenda.o
 	@mkdir -p $(BIN_PTH)
 	@mkdir -p $(BUILD_PTH)
 	@echo Linking executable
-	@$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o
+	@$(CC) -o $(BIN_PTH)$(EXEC) $(BUILD_PTH)Agenda.o $(BUILD_PTH)AgendaUI.o $(BUILD_PTH)AgendaService.o $(BUILD_PTH)Storage.o $(BUILD_PTH)Meeting.o $(BUILD_PTH)Date.o $(BUILD_PTH)User.o $(BUILD_PTH)CSV.o $(BUILD_PTH)AgendaLog.o $(BUILD_PTH)Path.o
 
 $(BUILD_PTH)Agenda.o : $(SRC_PTH)Agenda.cpp $(BUILD_PTH)AgendaUI.o
 	@mkdir -p $(BUILD_PTH)
 	@echo Building $@
 	@$(CC) -c -o $@ $<
 
-$(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUILD_PTH)AgendaService.o
+$(BUILD_PTH)AgendaUI.o : $(SRC_PTH)AgendaUI.cpp $(HEADER_PTH)AgendaUI.hpp $(BUILD_PTH)AgendaService.o $(BUILD_PTH)AgendaLog.o
 	@mkdir -p $(BUILD_PTH)
 	@echo Building $@
 	@$(CC) -c -o $@ $<
 
-$(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(HEADER_PTH)AgendaException.hpp $(BUILD_PTH)Storage.o
+$(BUILD_PTH)AgendaService.o : $(SRC_PTH)AgendaService.cpp $(HEADER_PTH)AgendaService.hpp $(HEADER_PTH)AgendaException.hpp $(BUILD_PTH)Storage.o $(BUILD_PTH)AgendaLog.o
 	@mkdir -p $(BUILD_PTH)
 	@echo Building $@
 	@$(CC) -c -o $@ $<
 
-$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o $(BUILD_PTH)Date.o $(BUILD_PTH)CSV.o
+$(BUILD_PTH)Storage.o : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(BUILD_PTH)Meeting.o $(BUILD_PTH)User.o $(BUILD_PTH)Date.o $(BUILD_PTH)CSV.o $(BUILD_PTH)AgendaLog.o $(BUILD_PTH)Path.o
+	@mkdir -p $(BUILD_PTH)
+	@echo Building $@
+	@$(CC) -c -o $@ $<
+
+$(BUILD_PTH)AgendaLog.o : $(SRC_PTH)AgendaLog.cpp $(HEADER_PTH)AgendaLog.hpp $(BUILD_PTH)Path.o
+	@mkdir -p $(BUILD_PTH)
+	@echo Building $@
+	@$(CC) -c -o $@ $<
+
+$(BUILD_PTH)Path.o : $(SRC_PTH)Path.cpp $(HEADER_PTH)Path.hpp
 	@mkdir -p $(BUILD_PTH)
 	@echo Building $@
 	@$(CC) -c -o $@ $<
@@ -47,7 +57,7 @@ $(BUILD_PTH)CSV.o : $(SRC_PTH)CSV.cpp $(HEADER_PTH)CSV.hpp
 	@echo Building $@
 	@$(CC) -c -o $@ $<
 
-$(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(HEADER_PTH)Path.hpp $(BUILD_PTH)Date.o
+$(BUILD_PTH)Meeting.o : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(BUILD_PTH)Date.o
 	@mkdir -p $(BUILD_PTH)
 	@echo Building $@
 	@$(CC) -c -o $@ $<

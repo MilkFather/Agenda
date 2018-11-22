@@ -167,6 +167,8 @@ private:
      */
     void printCancel() const;
 
+    void log(const std::string s) const;
+
     // data
     std::string m_userName;
     std::string m_userPassword;

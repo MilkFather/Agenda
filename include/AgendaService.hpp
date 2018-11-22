@@ -170,6 +170,8 @@ private:
     void checkTimeFormat(const std::string t) const;
     void checkUserBusy(const std::string usr, const Date sd, const Date ed) const;
     Meeting getMeetingBySponsorAndTitle(const std::string sponsor, const std::string title) const;
+
+    void log(const std::string l) const;
 };
 
 #endif

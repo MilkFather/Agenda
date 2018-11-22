@@ -112,6 +112,8 @@ public:
   */
   bool sync(void);
 
+  void log(const std::string s) const;
+
 private:
   static std::shared_ptr<Storage> m_instance;
   std::list<User> m_userList;

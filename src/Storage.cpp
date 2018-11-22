@@ -2,6 +2,7 @@
 #include "Path.hpp"
 #include "Date.hpp"
 #include "CSV.hpp"
+#include "AgendaLog.hpp"
 #include <fstream>
 #include <vector>
 
@@ -9,6 +10,10 @@ std::shared_ptr<Storage> Storage::m_instance(NULL);
 
 Storage::Storage(void) {
     this->readFromFile();
+}
+
+void Storage::log(const std::string s) const {
+    AgendaLogMan::getInstance()->Log("AgendaStorage: " + s);
 }
 
 bool Storage::readFromFile(void) {
@@ -20,14 +25,18 @@ bool Storage::readFromFile(void) {
     for (auto ul : users) {
         if (ul.size() != 4)
             continue;
-        this->createUser(User(ul[0], ul[1], ul[2], ul[3]));
+        this->m_userList.push_back(User(ul[0], ul[1], ul[2], ul[3]));
     }
     for (auto ml : meetings) {
         if (ml.size() != 5)
             continue;
         std::vector<std::string> parts = CSV::split(ml[1], '&');
-        this->createMeeting(Meeting(ml[0], parts, Date::stringToDate(ml[2]), Date::stringToDate(ml[3]),ml[4]));
+        this->m_meetingList.push_back(Meeting(ml[0], parts, Date::stringToDate(ml[2]), Date::stringToDate(ml[3]),ml[4]));
     }
+
+    log("read users: " + std::to_string(m_userList.size()) + " entries.");
+    log("read meetings: " + std::to_string(m_meetingList.size()) + " entries.");
+
     this->m_dirty = false;
     return true;
 }
@@ -51,7 +60,11 @@ bool Storage::writeToFile(void) {
     }
     CSV::writeFile(users, Path::userPath);
     CSV::writeFile(meetings, Path::meetingPath);
-    this->m_dirty =false;
+
+    log("wrote users: " + std::to_string(m_userList.size()) + " entries.");
+    log("wrote meetings: " + std::to_string(m_meetingList.size()) + " entries.");
+
+    this->m_dirty = false;
     return true;
 }
 
@@ -71,6 +84,8 @@ Storage::~Storage() {
 void Storage::createUser(const User & t_user) {
     this->m_userList.push_back(t_user);
     this->m_dirty = true;
+
+    log("created 1 user entries.");
 }
 
 std::list<User>
@@ -82,6 +97,9 @@ Storage::queryUser(std::function<bool(const User &)> filter) const {
             res.push_back(*it);
         }
     }
+
+    log("queried " + std::to_string(res.size()) + " user entries.");
+
     return res;
 }
 
@@ -95,6 +113,9 @@ int Storage::updateUser(std::function<bool(const User &)> filter,
             count++;
         }
     }
+
+    log("updated " + std::to_string(count) + " user entries.");
+
     this->m_dirty = true;
     return count;
 }
@@ -109,6 +130,9 @@ int Storage::deleteUser(std::function<bool(const User &)> filter) {
             ++it;
         }
     }
+
+    log("deleted " + std::to_string(count) + " user entries.");
+
     this->m_dirty = true;
     return count;
 }
@@ -116,6 +140,8 @@ int Storage::deleteUser(std::function<bool(const User &)> filter) {
 void Storage::createMeeting(const Meeting & t_meeting) {
     this->m_meetingList.push_back(t_meeting);
     this->m_dirty = true;
+
+    log("created 1 meeting entries.");
 }
 
 std::list<Meeting>
@@ -127,6 +153,9 @@ Storage::queryMeeting(std::function<bool(const Meeting &)> filter) const {
             res.push_back(*it);
         }
     }
+
+    log("queried " + std::to_string(res.size()) + " meeting entries.");
+
     return res;
 }
 
@@ -140,6 +169,9 @@ int Storage::updateMeeting(std::function<bool(const Meeting &)> filter,
             count++;
         }
     }
+
+    log("updated " + std::to_string(count) + " meeting entries.");
+
     this->m_dirty = true;
     return count;
 }
@@ -156,6 +188,9 @@ int Storage::deleteMeeting(std::function<bool(const Meeting &)> filter) {
             ++it;
         }
     }
+
+    log("deleted " + std::to_string(count) + " meeting entries.");
+
     this->m_dirty = true;
     return count;
 }

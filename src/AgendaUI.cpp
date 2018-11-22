@@ -68,20 +68,32 @@ void AgendaUI::printError(const std::string &msg) const {
     std::cout << redbold << " Error: " << msg << resetcon << std::endl;
     printActionHeader(redbold);
     std::cout << redbold << " Failed" << resetcon << std::endl << std::endl;
-    AgendaLogMan::getInstance()->Log("Error");
+
+    log(msg);
+    log(m_currentAction + " FAILED.");
 }
 
 void AgendaUI::printSuccess() const {
     printActionHeader(greenbold);
     std::cout << greenbold << " Success" << resetcon << std::endl << std::endl;
+
+    log(m_currentAction + " SUCCEED.");
 }
 
 void AgendaUI::printCancel() const {
     printActionHeader(bluebold);
     std::cout << bluebold << " Cancelled" << resetcon << std::endl << std::endl;
+
+    log(m_currentAction + " CANCELLED.");
+}
+
+void AgendaUI::log(const std::string s) const {
+    AgendaLogMan::getInstance()->Log(m_userName + "@AgendaUI: " + s);
 }
 
 AgendaUI::AgendaUI() {
+    log("Agenda UI Startup...");
+
     std::cout << std::endl << "Agenda 1.0" << std::endl << std::endl;
     std::cout << "Copyright 2018 Sun Yat-sen University, all rights reserved." << std::endl;
     std::cout << "For a list of available commands, please type \"" << bold << "h" << resetcon << "\"" << std::endl;
@@ -90,6 +102,8 @@ AgendaUI::AgendaUI() {
 
 AgendaUI::~AgendaUI() {
     this->m_agendaService.quitAgenda();
+
+    log("Agenda UI Close down...");
 }
 
 void AgendaUI::OperationLoop(void) {
@@ -121,62 +135,81 @@ bool AgendaUI::executeOperation(std::string t_operation) {
     if (this->m_userName != "") {  // logged in
         if (t_operation == "h") {
             m_currentAction = "PRINT COMMANDS";
+            log("attempt to " + m_currentAction);
             this->printActions();
         } else if (t_operation == "o") {
             m_currentAction = "LOG OUT";
+            log("attempt to " + m_currentAction);
             this->userLogOut();
         } else if (t_operation == "dc") {
             m_currentAction = "DELETE AGENDA ACCOUNT";
+            log("attempt to " + m_currentAction);
             this->deleteUser();
         } else if (t_operation == "lu") {
             m_currentAction = "LIST ALL USERS";
+            log("attempt to " + m_currentAction);
             this->listAllUsers();
         } else if (t_operation == "cm") {
             m_currentAction = "CREATE MEETING";
+            log("attempt to " + m_currentAction);
             this->createMeeting();
         } else if (t_operation == "amp") {
             m_currentAction = "ADD PARTICIPATOR";
+            log("attempt to " + m_currentAction);
             this->addParticipator();
         } else if (t_operation == "rmp") {
             m_currentAction = "REMOVE PARTICIPATOR";
+            log("attempt to " + m_currentAction);
             this->removeParticipator();
         } else if (t_operation == "rqm") {
             m_currentAction = "QUIT MEETING";
+            log("attempt to " + m_currentAction);
             this->quitMeeting();
         } else if (t_operation == "la") {
             m_currentAction = "LIST ALL MEETINGS";
+            log("attempt to " + m_currentAction);
             this->listAllMeetings();
         } else if (t_operation == "las") {
             m_currentAction = "LIST ALL SPONSOR MEETINGS";
+            log("attempt to " + m_currentAction);
             this->listAllSponsorMeetings();
         } else if (t_operation == "lap") {
             m_currentAction = "LIST ALL PARTICIPATOR MEETINGS";
+            log("attempt to " + m_currentAction);
             this->listAllParticipateMeetings();
         } else if (t_operation == "qm") {
             m_currentAction = "QUERY MEETING";
+            log("attempt to " + m_currentAction);
             this->queryMeetingByTitle();
         } else if (t_operation == "qt") {
             m_currentAction = "QUERY MEETINGS";
+            log("attempt to " + m_currentAction);
             this->queryMeetingByTimeInterval();
         } else if (t_operation == "dm") {
             m_currentAction = "DELETE MEETING";
+            log("attempt to " + m_currentAction);
             this->deleteMeetingByTitle();
         } else if (t_operation == "da") {
             m_currentAction = "DELETE ALL MEETINGS";
+            log("attempt to " + m_currentAction);
             this->deleteAllMeetings();
         }
     } else {   // not logged in
         if (t_operation == "h") {
             m_currentAction = "PRINT COMMANDS";
+            log("attempt to " + m_currentAction);
             this->printActions();
         } else if (t_operation == "l") {
             m_currentAction = "LOG IN";
+            log("attempt to " + m_currentAction);
             this->userLogIn();
         } else if (t_operation == "r") {
             m_currentAction = "REGISTER";
+            log("attempt to " + m_currentAction);
             this->userRegister();
         } else if (t_operation == "q") {
             m_currentAction = "QUIT AGENDA";
+            log("attempt to " + m_currentAction);
             this->quitAgenda();
             return false;
         }
