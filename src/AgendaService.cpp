@@ -20,7 +20,7 @@ void AgendaService::checkUserExistence(const string userName) const {
 
     if (m_storage->queryUser([userName](const User &x) -> bool {
         return (x.getName() == userName);
-    }).empty()) {
+    }).size() != 1) {
         log("user existence check failed.");
 
         throw UserNotExistException(userName);          // throw when not exist
@@ -108,6 +108,35 @@ void AgendaService::userRegister(const std::string &userName, const std::string 
     log("user duplication check passed.");
 
     m_storage->createUser(User(userName, password, email, phone));
+}
+
+void AgendaService::changeEmailAndPhone(const std::string &userName, const std::string &newemail, const std::string &newphone) {
+    checkUserExistence(userName);
+
+    int updated = m_storage->updateUser([userName](const User &x) -> bool {
+        return (x.getName() == userName);
+    }, [newemail, newphone](User &x) -> void {
+        x.setEmail(newemail);
+        x.setPhone(newphone);
+    });
+
+    if (updated != 1) {
+        throw UnknownException();
+    }
+}
+
+void AgendaService::changePassword(const std::string &userName, const std::string &oldPassword, const std::string &newPassword) {
+    userLogIn(userName, oldPassword);
+
+    int updated = m_storage->updateUser([userName](const User &x) -> bool {
+        return (x.getName() == userName);
+    }, [newPassword](User &x) -> void {
+        x.setPassword(newPassword);
+    });
+
+    if (updated != 1) {
+        throw UnknownException();
+    }
 }
 
 void AgendaService::deleteUser(const std::string &userName, const std::string &password, const bool &action) {
