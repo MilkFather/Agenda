@@ -53,6 +53,16 @@ private:
     void userRegister(void);
 
     /**
+     * user information change
+     */
+    void userChangeEmailPhone(void);
+
+    /**
+     * user password change
+     */
+    void userChangePassword(void);
+
+    /**
      * user logout
      */
     void userLogOut(void);

@@ -37,6 +37,23 @@ public:
                       const std::string &email, const std::string &phone);
 
     /**
+     * change user information
+     * @param userName the user's username, used to identify and cannot be changed
+     * @param newemail the user's new email
+     * @param newphone the user's new phone
+     * @return if success, no error is thrown
+     */
+    void changeEmailAndPhone(const std::string &userName, const std::string &newemail, const std::string &newphone);
+
+    /**
+     * change a user's password
+     * @param userName the user's username, used to identify
+     * @param oldPassword the user's old password, used to verify identity
+     * @param newPassword the user's new password
+     */
+    void changePassword(const std::string &userName, const std::string &oldPassword, const std::string &newPassword);
+
+    /**
      * delete a user
      * @param userName user's username
      * @param password user's password

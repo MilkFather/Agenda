@@ -137,7 +137,16 @@ bool AgendaUI::executeOperation(std::string t_operation) {
             m_currentAction = "PRINT COMMANDS";
             log("attempt to " + m_currentAction);
             this->printActions();
-        } else if (t_operation == "o") {
+        } else if (t_operation == "ci") {
+            m_currentAction = "CHANGE USER INFO";
+            log("attempt to " + m_currentAction);
+            this->userChangeEmailPhone();
+        } else if (t_operation == "cp") {
+            m_currentAction = "CHANGE USER PASSWORD";
+            log("attempt to " + m_currentAction);
+            this->userChangePassword();
+        }
+        else if (t_operation == "o") {
             m_currentAction = "LOG OUT";
             log("attempt to " + m_currentAction);
             this->userLogOut();
@@ -234,6 +243,8 @@ void AgendaUI::printActions(void) {
         std::cout << bold << "q" << resetcon << "   - Quit Agenda" << std::endl;
     } else {  // logged in
         std::cout << bold << "h" << resetcon << "   - Show this list" << std::endl;
+        std::cout << bold << "ci" << resetcon << "  - Change user information" << std::endl;
+        std::cout << bold << "cp" << resetcon << "  - Change user password" << std::endl;
         std::cout << bold << "o" << resetcon << "   - Log out Agenda" << std::endl;
         std::cout << bold << "dc" << resetcon << "  - Delete Agenda account" << std::endl;
         std::cout << bold << "lu" << resetcon << "  - List all Agenda user" << std::endl;
@@ -302,12 +313,40 @@ void AgendaUI::quitAgenda(void) {
     }
 }
 
+void AgendaUI::userChangeEmailPhone(void) {
+    try {
+        printParameter(2, "new email", "new phone");
+        char ne[1024], np[1024];
+        getParameter(2, ne, np);
+        this->m_agendaService.changeEmailAndPhone(this->m_userName, string(ne), string(np));
+        printSuccess();
+    } catch (exception &e) {
+        printError(e.what());
+    }
+}
+
+void AgendaUI::userChangePassword(void) {
+    try {
+        printParameter(2, "old password", "new password");
+        char op[1024], np[1024];
+        getParameter(2, op, np);
+        this->m_agendaService.changePassword(this->m_userName, string(op), string(np));
+        this->m_userPassword = string(np);
+        printSuccess();
+    } catch (exception &e) {
+        printError(e.what());
+    }
+}
+
 void AgendaUI::deleteUser(void) {
     try {
         this->m_agendaService.deleteUser(this->m_userName, this->m_userPassword, false);
 
         if (printConfirmation("Do you want to delete this account?")) {
-            this->m_agendaService.deleteUser(this->m_userName, this->m_userPassword);
+            printParameter(1, "password");
+            char pwd[1024];
+            getParameter(1, pwd);
+            this->m_agendaService.deleteUser(this->m_userName, string(pwd));
             this->m_userName = "";
             this->m_userPassword = "";
             printSuccess();
