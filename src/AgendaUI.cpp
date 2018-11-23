@@ -353,6 +353,7 @@ void AgendaUI::listAllUsers(void) {
                 << phones[i] << fillblank(widphone, phones[i].length())
                 << std::endl;
         }
+        std::cout << std::endl;
     } catch (exception &e) {
         printError(e.what());
     }

@@ -10,11 +10,13 @@ TEST_SRC_PTH := ./test/src/
 TEST_GTEST_PTH := ./test/src/gtest/
 TEST_GTEST_INT_PTH := ./test/src/gtest/internal/
 TEST_BIN_PTH := ./test/bin/
+TEST_USR_SRC_PTH := ./test-suite/
+TEST_USR_HEADER_PTH := ./test-suite/
 
 EXEC := agenda
 
 CC := g++ -O3 -std=c++11 -I$(HEADER_PTH)
-CCT := g++ -g -std=c++11 -I$(HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread
+CCT := g++ -g -std=c++11 -I$(TEST_USR_HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread
 
 build : $(BUILD_PTH)Agenda.o
 	@mkdir -p $(BIN_PTH)
@@ -95,5 +97,5 @@ test-meeting : $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(SRC_PTH)Date.cpp
 test-storage : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp $(HEADER_PTH)Path.hpp $(TEST_SRC_PTH)StorageTest.cpp
 	@$(CCT) -o $(TEST_BIN_PTH)test-storage $(SRC_PTH)Storage.cpp $(SRC_PTH)Meeting.cpp $(SRC_PTH)Date.cpp $(SRC_PTH)User.cpp $(TEST_SRC_PTH)StorageTest.cpp $(TEST_SRC_PTH)utility.cpp
 
-test-service : $(SRC_PTH)Storage.cpp $(HEADER_PTH)Storage.hpp $(SRC_PTH)Meeting.cpp $(HEADER_PTH)Meeting.hpp $(SRC_PTH)Date.cpp $(HEADER_PTH)Date.hpp $(SRC_PTH)User.cpp $(HEADER_PTH)User.hpp $(HEADER_PTH)Path.hpp $(TEST_SRC_PTH)AgendaServiceTest.cpp
-	@$(CCT) -o $(TEST_BIN_PTH)test-service $(SRC_PTH)AgendaService.cpp $(SRC_PTH)Storage.cpp $(SRC_PTH)Meeting.cpp $(SRC_PTH)Date.cpp $(SRC_PTH)User.cpp $(TEST_SRC_PTH)AgendaServiceTest.cpp $(TEST_SRC_PTH)utility.cpp
+test-service : $(TEST_USR_SRC_PTH)Storage.cpp $(TEST_USR_HEADER_PTH)Storage.hpp $(TEST_USR_SRC_PTH)Meeting.cpp $(TEST_USR_HEADER_PTH)Meeting.hpp $(TEST_USR_SRC_PTH)Date.cpp $(TEST_USR_HEADER_PTH)Date.hpp $(TEST_USR_SRC_PTH)User.cpp $(TEST_USR_HEADER_PTH)User.hpp $(TEST_USR_HEADER_PTH)Path.hpp $(TEST_SRC_PTH)AgendaServiceTest.cpp
+	@$(CCT) -o $(TEST_BIN_PTH)test-service $(TEST_USR_SRC_PTH)AgendaService.cpp $(TEST_USR_SRC_PTH)Storage.cpp $(TEST_USR_SRC_PTH)Meeting.cpp $(TEST_USR_SRC_PTH)Date.cpp $(TEST_USR_SRC_PTH)User.cpp $(TEST_SRC_PTH)AgendaServiceTest.cpp $(TEST_SRC_PTH)utility.cpp
