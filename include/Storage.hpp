@@ -8,6 +8,11 @@
 #include "Meeting.hpp"
 #include "User.hpp"
 
+using std::string;
+using std::list;
+using std::function;
+using std::shared_ptr;
+
 class Storage {
 private:
   /**
@@ -38,7 +43,7 @@ public:
   * get Instance of storage
   * @return the pointer of the instance
   */
-  static std::shared_ptr<Storage> getInstance(void);
+  static shared_ptr<Storage> getInstance(void);
 
   /**
   *   destructor
@@ -59,7 +64,7 @@ public:
   * @param a lambda function as the filter
   * @return a list of fitted users
   */
-  std::list<User> queryUser(std::function<bool(const User &)> filter) const;
+  list<User> queryUser(function<bool(const User &)> filter) const;
 
   /**
   * update users
@@ -67,15 +72,15 @@ public:
   * @param a lambda function as the method to update the user
   * @return the number of updated users
   */
-  int updateUser(std::function<bool(const User &)> filter,
-                 std::function<void(User &)> switcher);
+  int updateUser(function<bool(const User &)> filter,
+                 function<void(User &)> switcher);
 
   /**
   * delete users
   * @param a lambda function as the filter
   * @return the number of deleted users
   */
-  int deleteUser(std::function<bool(const User &)> filter);
+  int deleteUser(function<bool(const User &)> filter);
 
   /**
   * create a meeting
@@ -88,8 +93,8 @@ public:
   * @param a lambda function as the filter
   * @return a list of fitted meetings
   */
-  std::list<Meeting> queryMeeting(
-      std::function<bool(const Meeting &)> filter) const;
+  list<Meeting> queryMeeting(
+      function<bool(const Meeting &)> filter) const;
 
   /**
   * update meetings
@@ -97,27 +102,27 @@ public:
   * @param a lambda function as the method to update the meeting
   * @return the number of updated meetings
   */
-  int updateMeeting(std::function<bool(const Meeting &)> filter,
-                    std::function<void(Meeting &)> switcher);
+  int updateMeeting(function<bool(const Meeting &)> filter,
+                    function<void(Meeting &)> switcher);
 
   /**
   * delete meetings
   * @param a lambda function as the filter
   * @return the number of deleted meetings
   */
-  int deleteMeeting(std::function<bool(const Meeting &)> filter);
+  int deleteMeeting(function<bool(const Meeting &)> filter);
 
   /**
   * sync with the file
   */
   bool sync(void);
 
-  void log(const std::string s) const;
+  void log(const string s) const;
 
 private:
-  static std::shared_ptr<Storage> m_instance;
-  std::list<User> m_userList;
-  std::list<Meeting> m_meetingList;
+  static shared_ptr<Storage> m_instance;
+  list<User> m_userList;
+  list<Meeting> m_meetingList;
   bool m_dirty;
 };
 

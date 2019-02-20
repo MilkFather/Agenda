@@ -6,9 +6,8 @@
 
 using std::exception;
 using std::string;
-using std::stringstream;
 
-class AgendaException: public std::exception {
+class AgendaException: public exception {
 protected:
     string msg;
 public:

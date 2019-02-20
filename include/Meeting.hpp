@@ -4,6 +4,9 @@
 #include <vector>
 #include "Date.hpp"
 
+using std::string;
+using std::vector;
+
 class Meeting {
 public:
   /**
@@ -14,10 +17,10 @@ public:
   /**
   *   @brief constructor with argument
   */
-  Meeting(const std::string &t_sponsor,
-          const std::vector<std::string> &t_participator,
+  Meeting(const string &t_sponsor,
+          const vector<string> &t_participator,
           const Date &t_startTime, const Date &t_endTime,
-          const std::string &t_title);
+          const string &t_title);
 
   /**
   * @brief copy constructor of left value
@@ -28,37 +31,37 @@ public:
   *   @brief get the meeting's sponsor
   *   @return a string indicate sponsor
   */
-  std::string getSponsor(void) const;
+  string getSponsor(void) const;
 
   /**
   * @brief set the sponsor of a meeting
   * @param  the new sponsor string
   */
-  void setSponsor(const std::string &t_sponsor);
+  void setSponsor(const string &t_sponsor);
 
   /**
   * @brief  get the participators of a meeting
   * @return return a string vector indicate participators
   */
-  std::vector<std::string> getParticipator(void) const;
+  vector<string> getParticipator(void) const;
 
   /**
   *   @brief set the new participators of a meeting
   *   @param the new participators vector
   */
-  void setParticipator(const std::vector<std::string> &t_participators);
+  void setParticipator(const vector<string> &t_participators);
 
   /**
   * @brief add a new participator to the meeting
   * @param the new participator
   */
-  void addParticipator(const std::string &t_participator);
+  void addParticipator(const string &t_participator);
 
   /**
   * @brief remove a participator of the meeting
   * @param the participator to be removed
   */
-  void removeParticipator(const std::string &t_participator);
+  void removeParticipator(const string &t_participator);
 
   /**
   * @brief get the startDate of a meeting
@@ -88,27 +91,27 @@ public:
   * @brief get the title of a meeting
   * @return a date title the endDate
   */
-  std::string getTitle(void) const;
+  string getTitle(void) const;
 
   /**
   * @brief  set the title of a meeting
   * @param  the new title of a meeting
   */
-  void setTitle(const std::string &t_title);
+  void setTitle(const string &t_title);
 
   /**
   * @brief check if the user take part in this meeting
   * @param t_username the source username
   * @return if the user take part in this meeting
   */
-  bool isParticipator(const std::string &t_username) const;
+  bool isParticipator(const string &t_username) const;
 
 private:
-  std::string m_sponsor;
-  std::vector<std::string> m_participators;
+  string m_sponsor;
+  vector<string> m_participators;
   Date m_startDate;
   Date m_endDate;
-  std::string m_title;
+  string m_title;
 };
 
 #endif

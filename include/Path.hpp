@@ -13,9 +13,10 @@ class Path {
    */
   static const char *meetingPath;
 
+  /**
+   * log path
+   */
   static const char *logDirPath;
-
-  static const char *logDirPathWin;
 };
 
 #endif

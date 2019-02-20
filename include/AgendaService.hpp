@@ -5,6 +5,10 @@
 #include <string>
 #include "Storage.hpp"
 
+using std::string;
+using std::list;
+using std::vector;
+
 class AgendaService {
 public:
     /**
@@ -23,7 +27,7 @@ public:
      * @param password the password user enter
      * @return if success, true will be returned
      */
-    void userLogIn(const std::string &userName, const std::string &password);
+    void userLogIn(const string &userName, const string &password);
 
     /**
      * regist a user
@@ -33,8 +37,8 @@ public:
      * @param phone new user's phone
      * @return if success, true will be returned
      */
-    void userRegister(const std::string &userName, const std::string &password,
-                      const std::string &email, const std::string &phone);
+    void userRegister(const string &userName, const string &password,
+                      const string &email, const string &phone);
 
     /**
      * change user information
@@ -43,7 +47,7 @@ public:
      * @param newphone the user's new phone
      * @return if success, no error is thrown
      */
-    void changeEmailAndPhone(const std::string &userName, const std::string &newemail, const std::string &newphone);
+    void changeEmailAndPhone(const string &userName, const string &newemail, const string &newphone);
 
     /**
      * change a user's password
@@ -51,7 +55,7 @@ public:
      * @param oldPassword the user's old password, used to verify identity
      * @param newPassword the user's new password
      */
-    void changePassword(const std::string &userName, const std::string &oldPassword, const std::string &newPassword);
+    void changePassword(const string &userName, const string &oldPassword, const string &newPassword);
 
     /**
      * delete a user
@@ -59,13 +63,13 @@ public:
      * @param password user's password
      * @return if success, true will be returned
      */
-    void deleteUser(const std::string &userName, const std::string &password, const bool &action = true);
+    void deleteUser(const string &userName, const string &password, const bool &action = true);
 
     /**
      * list all users from storage
      * @return a user list result
      */
-    std::list<User> listAllUsers(void) const;
+    list<User> listAllUsers(void) const;
 
     /**
      * create a meeting
@@ -76,9 +80,9 @@ public:
      * @param endData the meeting's end date
      * @return if success, true will be returned
      */
-    void createMeeting(const std::string &userName, const std::string &title,
-                       const std::string &startDate, const std::string &endDate,
-                       const std::vector<std::string> &participator);
+    void createMeeting(const string &userName, const string &title,
+                       const string &startDate, const string &endDate,
+                       const vector<string> &participator);
 
     /**
      * add a participator to a meeting
@@ -87,9 +91,9 @@ public:
      * @param participator the meeting's participator
      * @return if success, true will be returned
      */
-    void addMeetingParticipator(const std::string &userName,
-                                const std::string &title,
-                                const std::string &participator);
+    void addMeetingParticipator(const string &userName,
+                                const string &title,
+                                const string &participator);
 
     /**
      * remove a participator from a meeting
@@ -98,9 +102,9 @@ public:
      * @param participator the meeting's participator
      * @return if success, true will be returned
      */
-    void removeMeetingParticipator(const std::string &userName,
-                                   const std::string &title,
-                                   const std::string &participator,
+    void removeMeetingParticipator(const string &userName,
+                                   const string &title,
+                                   const string &participator,
                                    const bool &action = true);
 
     /**
@@ -109,7 +113,7 @@ public:
      * @param title the meeting's title
      * @return if success, true will be returned
      */
-    void quitMeeting(const std::string &userName, const std::string &title, const bool &action = true);
+    void quitMeeting(const string &userName, const string &title, const bool &action = true);
 
     /**
      * search a meeting by username and title
@@ -117,8 +121,8 @@ public:
      * @param title the meeting's title
      * @return a meeting list result
      */
-    std::list<Meeting> meetingQuery(const std::string &userName,
-                                    const std::string &title) const;
+    list<Meeting> meetingQuery(const string &userName,
+                                    const string &title) const;
     /**
      * search a meeting by username, time interval
      * @param userName as a sponsor OR a participator
@@ -126,31 +130,31 @@ public:
      * @param endDate time interval's end date
      * @return a meeting list result
      */
-    std::list<Meeting> meetingQuery(const std::string &userName,
-                                    const std::string &startDate,
-                                    const std::string &endDate) const;
+    list<Meeting> meetingQuery(const string &userName,
+                                    const string &startDate,
+                                    const string &endDate) const;
 
     /**
      * list all meetings the user take part in
      * @param userName user's username
      * @return a meeting list result
      */
-    std::list<Meeting> listAllMeetings(const std::string &userName) const;
+    list<Meeting> listAllMeetings(const string &userName) const;
 
     /**
      * list all meetings the user sponsor
      * @param userName user's username
      * @return a meeting list result
      */
-    std::list<Meeting> listAllSponsorMeetings(const std::string &userName) const;
+    list<Meeting> listAllSponsorMeetings(const string &userName) const;
 
     /**
      * list all meetings the user take part in and sponsor by other
      * @param userName user's username
      * @return a meeting list result
      */
-    std::list<Meeting> listAllParticipateMeetings(
-        const std::string &userName) const;
+    list<Meeting> listAllParticipateMeetings(
+        const string &userName) const;
 
     /**
      * delete a meeting by title and its sponsor
@@ -158,14 +162,14 @@ public:
      * @param title meeting's title
      * @return if success, true will be returned
      */
-    void deleteMeeting(const std::string &userName, const std::string &title, const bool &action = true);
+    void deleteMeeting(const string &userName, const string &title, const bool &action = true);
 
     /**
      * delete all meetings by sponsor
      * @param userName sponsor's username
      * @return if success, true will be returned
      */
-    void deleteAllMeetings(const std::string &userName, const bool &action = true);
+    void deleteAllMeetings(const string &userName, const bool &action = true);
 
     /**
      * start Agenda service and connect to storage
@@ -178,17 +182,17 @@ public:
     void quitAgenda(void);
 
 private:
-    std::shared_ptr<Storage> m_storage;
+    shared_ptr<Storage> m_storage;
 
     /**
      * helper functions
      */
-    void checkUserExistence(const std::string userName) const; 
-    void checkTimeFormat(const std::string t) const;
-    void checkUserBusy(const std::string usr, const Date sd, const Date ed) const;
-    Meeting getMeetingBySponsorAndTitle(const std::string sponsor, const std::string title) const;
+    void checkUserExistence(const string userName) const; 
+    void checkTimeFormat(const string t) const;
+    void checkUserBusy(const string usr, const Date sd, const Date ed) const;
+    Meeting getMeetingBySponsorAndTitle(const string sponsor, const string title) const;
 
-    void log(const std::string l) const;
+    void log(const string l) const;
 };
 
 #endif

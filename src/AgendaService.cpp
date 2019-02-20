@@ -3,6 +3,8 @@
 #include "AgendaException.hpp"
 #include "AgendaLog.hpp"
 
+using std::set;
+
 AgendaService::AgendaService() {
     startAgenda();
 }
@@ -11,7 +13,7 @@ AgendaService::~AgendaService() {
     quitAgenda();
 }
 
-void AgendaService::log(const std::string l) const {
+void AgendaService::log(const string l) const {
     AgendaLogMan::getInstance()->Log("AgendaService: " + l);
 }
 
@@ -80,7 +82,7 @@ Meeting AgendaService::getMeetingBySponsorAndTitle(const string sponsor, const s
     return m;
 }
 
-void AgendaService::userLogIn(const std::string &userName, const std::string &password) {
+void AgendaService::userLogIn(const string &userName, const string &password) {
     log("starting login check...");
 
     if (m_storage->queryUser([userName, password](const User & x) -> bool {
@@ -94,7 +96,7 @@ void AgendaService::userLogIn(const std::string &userName, const std::string &pa
     log("login check passed.");
 }
 
-void AgendaService::userRegister(const std::string &userName, const std::string &password, const std::string &email, const std::string &phone) {
+void AgendaService::userRegister(const string &userName, const string &password, const string &email, const string &phone) {
     log("starting user duplication check...");
 
     if (!m_storage->queryUser([userName](const User &x) -> bool {
@@ -110,7 +112,7 @@ void AgendaService::userRegister(const std::string &userName, const std::string 
     m_storage->createUser(User(userName, password, email, phone));
 }
 
-void AgendaService::changeEmailAndPhone(const std::string &userName, const std::string &newemail, const std::string &newphone) {
+void AgendaService::changeEmailAndPhone(const string &userName, const string &newemail, const string &newphone) {
     checkUserExistence(userName);
 
     int updated = m_storage->updateUser([userName](const User &x) -> bool {
@@ -125,7 +127,7 @@ void AgendaService::changeEmailAndPhone(const std::string &userName, const std::
     }
 }
 
-void AgendaService::changePassword(const std::string &userName, const std::string &oldPassword, const std::string &newPassword) {
+void AgendaService::changePassword(const string &userName, const string &oldPassword, const string &newPassword) {
     userLogIn(userName, oldPassword);
 
     int updated = m_storage->updateUser([userName](const User &x) -> bool {
@@ -139,7 +141,7 @@ void AgendaService::changePassword(const std::string &userName, const std::strin
     }
 }
 
-void AgendaService::deleteUser(const std::string &userName, const std::string &password, const bool &action) {
+void AgendaService::deleteUser(const string &userName, const string &password, const bool &action) {
     userLogIn(userName, password);                      // the correct user & password
     
     if (action) {   // allow mock delete
@@ -156,13 +158,13 @@ void AgendaService::deleteUser(const std::string &userName, const std::string &p
     }
 }
 
-std::list<User> AgendaService::listAllUsers(void) const {
+list<User> AgendaService::listAllUsers(void) const {
     return m_storage->queryUser([](const User & x) -> bool {
         return true;
     });
 }
 
-void AgendaService::createMeeting(const std::string &userName, const std::string &title, const std::string &startDate, const std::string &endDate, const std::vector<std::string> &participator) {
+void AgendaService::createMeeting(const string &userName, const string &title, const string &startDate, const string &endDate, const vector<string> &participator) {
     // user basic check
     checkUserExistence(userName);                                   // the sponsor exists?
 
@@ -177,7 +179,7 @@ void AgendaService::createMeeting(const std::string &userName, const std::string
     log("participator empty check passed.");
     log("starting participator check...");
 
-    std::set<std::string> partpool;
+    set<string> partpool;
     for (auto n: participator) {
         if (partpool.find(n) != partpool.end()) {
             log("participator check failed: duplication.");
@@ -233,7 +235,7 @@ void AgendaService::createMeeting(const std::string &userName, const std::string
     m_storage->createMeeting(Meeting(userName, participator, sd, ed, title));
 }
 
-void AgendaService::addMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator) {
+void AgendaService::addMeetingParticipator(const string &userName, const string &title, const string &participator) {
     checkUserExistence(userName);                      // the sponsor does not exist
     checkUserExistence(participator);
     
@@ -287,7 +289,7 @@ void AgendaService::addMeetingParticipator(const std::string &userName, const st
     log("final check passed.");
 }
 
-void AgendaService::removeMeetingParticipator(const std::string &userName, const std::string &title, const std::string &participator, const bool &action) {
+void AgendaService::removeMeetingParticipator(const string &userName, const string &title, const string &participator, const bool &action) {
     checkUserExistence(userName);
     checkUserExistence(participator);
     
@@ -330,7 +332,7 @@ void AgendaService::removeMeetingParticipator(const std::string &userName, const
     } 
 }
 
-void AgendaService::quitMeeting(const std::string &userName, const std::string &title, const bool &action) {
+void AgendaService::quitMeeting(const string &userName, const string &title, const bool &action) {
     checkUserExistence(userName);
 
     log("starting meeting existence check...");
@@ -382,7 +384,7 @@ void AgendaService::quitMeeting(const std::string &userName, const std::string &
     }
 }
 
-std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, const std::string &title) const {
+list<Meeting> AgendaService::meetingQuery(const string &userName, const string &title) const {
     checkUserExistence(userName);
     
     return m_storage->queryMeeting([userName, title](const Meeting &x) -> bool {
@@ -390,7 +392,7 @@ std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, cons
     });
 }
 
-std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, const std::string &startDate, const std::string &endDate) const {
+list<Meeting> AgendaService::meetingQuery(const string &userName, const string &startDate, const string &endDate) const {
     checkUserExistence(userName);
     checkTimeFormat(startDate);
     checkTimeFormat(endDate);
@@ -411,7 +413,7 @@ std::list<Meeting> AgendaService::meetingQuery(const std::string &userName, cons
     });
 }
 
-std::list<Meeting> AgendaService::listAllMeetings(const std::string &userName) const {
+list<Meeting> AgendaService::listAllMeetings(const string &userName) const {
     checkUserExistence(userName);
     
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
@@ -419,7 +421,7 @@ std::list<Meeting> AgendaService::listAllMeetings(const std::string &userName) c
     });
 }
 
-std::list<Meeting> AgendaService::listAllSponsorMeetings(const std::string &userName) const {
+list<Meeting> AgendaService::listAllSponsorMeetings(const string &userName) const {
     checkUserExistence(userName);
 
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
@@ -427,7 +429,7 @@ std::list<Meeting> AgendaService::listAllSponsorMeetings(const std::string &user
     });
 }
 
-std::list<Meeting> AgendaService::listAllParticipateMeetings(const std::string &userName) const {
+list<Meeting> AgendaService::listAllParticipateMeetings(const string &userName) const {
     checkUserExistence(userName);
     
     return m_storage->queryMeeting([userName](const Meeting &x) -> bool {
@@ -435,7 +437,7 @@ std::list<Meeting> AgendaService::listAllParticipateMeetings(const std::string &
     });
 }
 
-void AgendaService::deleteMeeting(const std::string &userName, const std::string &title, const bool &action) {
+void AgendaService::deleteMeeting(const string &userName, const string &title, const bool &action) {
     checkUserExistence(userName);
     getMeetingBySponsorAndTitle(userName, title);
     
@@ -449,7 +451,7 @@ void AgendaService::deleteMeeting(const std::string &userName, const std::string
     }
 }
 
-void AgendaService::deleteAllMeetings(const std::string &userName, const bool &action) {
+void AgendaService::deleteAllMeetings(const string &userName, const bool &action) {
     checkUserExistence(userName);
     
     if (action) {

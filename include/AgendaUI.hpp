@@ -1,10 +1,10 @@
 #ifndef AGENDAUI_H
 #define AGENDAUI_H
 
-#include "AgendaService.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
+#include "AgendaService.hpp"
 
 #define resetcon "\033[0m"
 #define bold "\033[1m"
@@ -12,6 +12,9 @@
 #define greenbold "\033[1;32m"
 #define yellowbold "\033[1;33m"
 #define bluebold "\033[1;34m"
+
+using std::string;
+using std::list;
 
 class AgendaUI {
 public:
@@ -29,13 +32,13 @@ private:
      * catch user's operation
      * @return the operation
      */
-    std::string getOperation();
+    string getOperation();
 
     /**
      * execute the operation
      * @return if the operationloop continue
      */
-    bool executeOperation(std::string t_operation);
+    bool executeOperation(string t_operation);
 
     /**
      * print available commands
@@ -140,17 +143,17 @@ private:
     /**
      * show the meetings in the screen
      */
-    void printMeetings(const std::list<Meeting> t_meetings) const;
+    void printMeetings(const list<Meeting> t_meetings) const;
 
     /**
      * user confirmation
      */
-    bool printConfirmation(const std::string &text) const;
+    bool printConfirmation(const string &text) const;
 
     /**
      * show the header
      */
-    void printActionHeader(const std::string style = bold) const;
+    void printActionHeader(const string style = bold) const;
 
     /**
      * show action parameters
@@ -165,7 +168,7 @@ private:
     /**
      * show error
      */
-    void printError(const std::string &msg) const;
+    void printError(const string &msg) const;
 
     /**
      * show success
@@ -177,13 +180,13 @@ private:
      */
     void printCancel() const;
 
-    void log(const std::string s) const;
+    void log(const string s) const;
 
     // data
-    std::string m_userName;
-    std::string m_userPassword;
+    string m_userName;
+    string m_userPassword;
     AgendaService m_agendaService;
-    std::string m_currentAction;
+    string m_currentAction;
 };
 
 #endif

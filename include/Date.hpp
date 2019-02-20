@@ -4,6 +4,8 @@
 #include <initializer_list>
 #include <string>
 
+using std::string;
+
 class Date {
 public:
   /**
@@ -19,7 +21,7 @@ public:
   /**
   * @brief constructor with a string
   */
-  Date(const std::string &dateString);
+  Date(const string &dateString);
   /**
   * @brief return the year of a Date
   * @return   a integer indicate the year of a date
@@ -91,13 +93,13 @@ public:
   * 0000-00-00/00:00
   * @return a date
   */
-  static Date stringToDate(const std::string &t_dateString);
+  static Date stringToDate(const string &t_dateString);
 
   /**
   * @brief convert a date to string, if the date is invalid return
   * 0000-00-00/00:00
   */
-  static std::string dateToString(const Date &t_date);
+  static string dateToString(const Date &t_date);
 
   /**
   *  @brief overload the assign operator

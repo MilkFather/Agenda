@@ -11,7 +11,7 @@ SRC_PTH := ./src/
 
 EXEC := agenda.exe
 
-CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK
+CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -static -fexec-charset=GBK -Wall -Werror
 
 build : $(BUILD_PTH)Agenda.o
 	@if not exist "$(BIN_PTH_WIN)" mkdir $(BIN_PTH_WIN)

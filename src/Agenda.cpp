@@ -11,11 +11,14 @@
 
 #endif
 
+using std::cout;
+using std::endl;
+
 AgendaUI *ui = nullptr;
 
 void sig_handler(int sig) {
     if (sig == SIGINT) {
-        std::cout << std::endl << "\033[1;31m" << "[Agenda] User interrupt, saving" << "\033[0m" <<  std::endl;
+        cout << endl << "\033[1;31m" << "[Agenda] User interrupt, saving" << "\033[0m" <<  endl;
         if (ui != nullptr) {
             delete ui;
         }
@@ -24,7 +27,6 @@ void sig_handler(int sig) {
 }
 
 int main(int argc, char *argv[]) {
-    /* insert your code here */
     signal(SIGINT, sig_handler);
 #ifdef _WIN32
     // enable ANSI escape sequence on Windows

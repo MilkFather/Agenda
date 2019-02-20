@@ -15,8 +15,8 @@ TEST_USR_HEADER_PTH := ./test-suite/
 
 EXEC := agenda
 
-CC := g++ -O3 -std=c++11 -I$(HEADER_PTH)
-CCT := g++ -g -std=c++11 -I$(TEST_USR_HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread
+CC := g++ -O3 -std=c++11 -I$(HEADER_PTH) -Wall -Werror
+CCT := g++ -g -std=c++11 -I$(TEST_USR_HEADER_PTH) -I$(TEST_SRC_PTH) -I$(TEST_GTEST_PTH) -lgtest -lgtest_main -lpthread -Wall -Werror
 
 build : $(BUILD_PTH)Agenda.o
 	@mkdir -p $(BIN_PTH)
